@@ -9,7 +9,7 @@ const SceneSelection = () => {
   const [character, setCharacter] = useState(null);
   const [availableScenes, setAvailableScenes] = useState([]);
   const [loading, setLoading] = useState(true);
-  const botUsername = "the_hiddendesire_bot";
+  const botUsername = import.meta.env.VITE_BOT_USERNAME;
 
   useEffect(() => {
     // Найти персонажа в локальных данных
