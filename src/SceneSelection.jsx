@@ -37,15 +37,8 @@ const SceneSelection = () => {
     const timezoneOffsetMinutes = new Date().getTimezoneOffset();
     const timezoneOffsetHours = timezoneOffsetMinutes / -60;
     
-    // Создаем JSON payload и кодируем в base64 для избежания проблем с подчеркиваниями
-    const payload = {
-      char: character.id,
-      world: character.world_id,
-      scene: scene.id,
-      free: timezoneOffsetHours
-    };
-    const paramJson = JSON.stringify(payload);
-    const param = btoa(unescape(encodeURIComponent(paramJson))); // URL-safe base64
+    // Создаем диплинк с информацией о персонаже и сцене
+    const param = `char-${character.id}-world-${character.world_id}-scene-${scene.id}-free-${timezoneOffsetHours}`;
     const deepLink = `https://t.me/${botUsername}?start=${encodeURIComponent(param)}`;
     
     // Проверяем, доступен ли API Telegram Web App
