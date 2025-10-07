@@ -126,7 +126,7 @@ const characters = [
     description: 'Язвительная и сексуальная стримерша, королева хорроров и шутеров на Twitch. Её стримы взрывают чат, но хейтеры и тёмные секреты держат её на грани.',
     image: '/images/stream.png',
     world_id: 'real_world',
-    available_scenes: ['kris_stream_setup'],
+    available_scenes: ['kris_scene'],
     enabled: true,
     interests: ['гейминг', 'косплей', 'стримы', 'мемы', 'андеграундная музыка', 'психология чата'],
     dislikes: ['хейтеры', 'донатеры-тролли', 'предательство', 'лаги']
