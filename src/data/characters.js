@@ -137,7 +137,7 @@ const characters = [
     description: 'Дерзкая TikTok-альтушка с тату и пирсингом, чьи мрачные тренды и мемы взрывают сеть. Её жизнь — это хайп, хейт и страсть.',
     image: '/images/alt.png',
     world_id: 'real_world',
-    available_scenes: ['mia_tiktok_studio'],
+    available_scenes: ['mia_studio'],
     enabled: true,
     interests: ['TikTok', 'мемы', 'альт-мода', 'оккультная эстетика', 'чёрный юмор', 'тусовки'],
     dislikes: ['хейтеры', 'фейковые блогеры', 'контроль спонсоров', 'скука']
@@ -148,7 +148,7 @@ const characters = [
     description: 'Дерзкая и сексуальная инфлюенсерша, королева вечеринок и соцсетей. Она зажигает толпу и твой экран, но её жизнь — коктейль из хайпа, драм и страсти.',
     image: '/images/inf.png',
     world_id: 'real_world',
-    available_scenes: ['nika_club_vibe'],
+    available_scenes: ['nika_club'],
     enabled: true,
     interests: ['соцсети', 'мода', 'вечеринки', 'музыка', 'психология влияния', 'спонтанные приключения'],
     dislikes: ['хейтеры', 'слабость', 'контроль спонсоров', 'скука']
