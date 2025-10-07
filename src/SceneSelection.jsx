@@ -38,7 +38,8 @@ const SceneSelection = () => {
     const timezoneOffsetHours = timezoneOffsetMinutes / -60;
     
     // Создаем диплинк с информацией о персонаже и сцене
-    const deepLink = `https://t.me/${botUsername}?start=char-${character.id}-world-${character.world_id}-scene-${scene.id}-free-${timezoneOffsetHours}`;
+    const param = `char-${character.id}-world-${character.world_id}-scene-${scene.id}-free-${timezoneOffsetHours}`;
+    const deepLink = `https://t.me/${botUsername}?start=${encodeURIComponent(param)}`;
     
     // Проверяем, доступен ли API Telegram Web App
     if (window.Telegram && window.Telegram.WebApp) {
