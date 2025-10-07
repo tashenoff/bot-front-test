@@ -24,10 +24,7 @@ const AboutCharacter = ({ character }) => {
               ))}
             </div>
           </div>
-          <div className="mt-4 text-sm text-gray-400">
-            <p><strong>Мир:</strong> {character.world_id}</p>
-            <p><strong>Доступные сцены:</strong> {character.available_scenes.join(', ')}</p>
-          </div>
+       
         </div>
       </div>
     </div>
