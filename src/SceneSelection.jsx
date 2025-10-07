@@ -12,6 +12,7 @@ const SceneSelection = () => {
   const [character, setCharacter] = useState(null);
   const [availableScenes, setAvailableScenes] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showScrollTop, setShowScrollTop] = useState(false);
   const botUsername = import.meta.env.VITE_BOT_USERNAME;
 
   useEffect(() => {
@@ -32,6 +33,15 @@ const SceneSelection = () => {
 
     setLoading(false);
   }, [characterId]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowScrollTop(window.scrollY > 300);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const handleSceneSelect = (scene) => {
     if (!character) return;
@@ -152,6 +162,18 @@ const SceneSelection = () => {
       <div className="container mx-auto px-4 py-8">
         <CharacterGallery character={character} />
       </div>
+
+      {showScrollTop && (
+        <button
+          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          className="fixed bottom-20 left-1/2 -translate-x-1/2 bg-purple-600 hover:bg-purple-700 text-white p-3 rounded-full shadow-lg transition-opacity duration-300 z-50"
+          aria-label="Прокрутить вверх"
+        >
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />
+          </svg>
+        </button>
+      )}
 
       <Footer />
 
