@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import scenes from './data/scenes';
 import characters from './data/characters';
+import AboutCharacter from './AboutCharacter';
 
 const SceneSelection = () => {
   const { characterId } = useParams();
@@ -82,6 +83,11 @@ const SceneSelection = () => {
         
       </div>
 
+      {/* O персонаже */}
+      <div className="container mx-auto px-4 py-8">
+        <AboutCharacter character={character} />
+      </div>
+
       {/* Выбор сцен */}
       <div className="container mx-auto px-4 py-8">
         <h2 className="text-2xl font-bold mb-6 text-center">Выберите сцену для общения</h2>
@@ -91,14 +97,21 @@ const SceneSelection = () => {
             {availableScenes.map(scene => (
               <div 
                 key={scene.id}
-                className="bg-gray-800 rounded-lg overflow-hidden shadow-lg hover:shadow-purple-500/20 transition-all duration-300 cursor-pointer transform hover:scale-105"
+                className="bg-gray-800 rounded-lg overflow-hidden shadow-lg hover:shadow-purple-500/20 transition-all duration-300 cursor-pointer transform hover:scale-105 relative"
                 onClick={() => handleSceneSelect(scene)}
               >
-                <img 
-                  src={scene.image} 
-                  alt={scene.name} 
-                  className="w-full h-48 object-cover"
-                />
+                <div className="relative">
+                  <img 
+                    src={scene.image} 
+                    alt={scene.name} 
+                    className="w-full h-48 object-cover"
+                  />
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/10">
+                    <svg className="w-12 h-12 text-white opacity-80" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
+                    </svg>
+                  </div>
+                </div>
                 <div className="p-4">
                   <h3 className="text-xl font-bold mb-2 text-purple-400">{scene.name}</h3>
                   {scene.intro_text && (
@@ -116,7 +129,7 @@ const SceneSelection = () => {
 
         {/* Кнопка для случайной сцены */}
         {availableScenes.length > 1 && (
-          <div className="text-center mt-8">
+          <div className="text-center mt-4">
             <button
               onClick={() => {
                 const randomScene = availableScenes[Math.floor(Math.random() * availableScenes.length)];

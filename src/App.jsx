@@ -13,17 +13,19 @@ function App() {
   const [gifts, setGifts] = useState([]);
 
   useEffect(() => {
-    // Загрузка персонажей
-    fetch('/characters.json')
-      .then(response => response.json())
-      .then(data => setCharacters(data))
-      .catch(error => console.error('Error fetching characters:', error));
-
     // Загрузка подарков
     fetch('/gifts.json')
       .then(response => response.json())
       .then(data => setGifts(data))
       .catch(error => console.error('Error fetching gifts:', error));
+  }, []);
+
+  useEffect(() => {
+    import('./data/characters.js').then(module => {
+      const allCharacters = module.default;
+      const filtered = allCharacters.filter(character => character.enabled !== false);
+      setCharacters(filtered);
+    });
   }, []);
 
   const handleTelegramLinkClick = (e) => {

@@ -12,7 +12,9 @@ const CharacterCard = ({ character }) => {
 
   return (
     <div className="bg-gray-800 rounded-lg overflow-hidden shadow-lg">
-      <img src={character.image} alt={character.name} className="w-full h-64 object-cover" />
+      <div className="w-full bg-gray-800">
+        <img src={character.image} alt={character.name} className="w-full h-auto" />
+      </div>
       <div className="p-6">
         <h3 className="text-2xl font-bold mb-2 text-purple-400">{character.name}</h3>
         <p className="text-gray-400 mb-4">{character.description}</p>
