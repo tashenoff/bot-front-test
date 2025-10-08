@@ -3,8 +3,8 @@ import React from 'react';
 const GiftCard = ({ gift, showBuyButton = false, onSelect }) => {
   return (
     <div className="bg-gray-800 rounded-lg overflow-hidden shadow-lg hover:bg-gray-750 transition-colors flex flex-col">
-      <div className="w-full h-48 bg-gray-900 flex items-center justify-center p-4">
-        <img src={gift.image} alt={gift.name} className="w-full h-full object-contain" />
+      <div className="w-full h-48 bg-gray-900 overflow-hidden">
+        <img src={gift.image} alt={gift.name} className="w-full h-full object-cover" />
       </div>
       <div className="p-4 text-center flex flex-col flex-grow">
         <h3 className="text-xl font-bold mb-2 text-white">{gift.name}</h3>
