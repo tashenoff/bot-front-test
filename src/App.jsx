@@ -4,6 +4,7 @@ import GiftCard from './GiftCard';
 import Help from './Help';
 import Characters from './Characters';
 import SceneSelection from './SceneSelection';
+import Gifts from './Gifts';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { FaComments, FaUserFriends, FaBrain, FaGift } from 'react-icons/fa';
 
@@ -140,6 +141,7 @@ function App() {
         <Route path="/help" element={<Help />} />
         <Route path="/characters" element={<Characters />} />
         <Route path="/character/:characterId/scenes" element={<SceneSelection />} />
+        <Route path="/gifts" element={<Gifts />} />
       </Routes>
     </BrowserRouter>
   );
