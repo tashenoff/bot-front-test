@@ -45,45 +45,33 @@ const Gifts = () => {
   const handleGiftSelect = (giftId) => {
     setDebug(prev => [...prev, `Selecting gift: ${giftId}`]);
     
-    // Отправляем данные о выбранном подарке обратно в бота через Telegram WebApp API
+    // Используем deep link вместо sendData
     if (window.Telegram?.WebApp) {
       try {
         const tg = window.Telegram.WebApp;
-        const data = JSON.stringify({ 
-          type: 'gift_selected',
-          gift_id: giftId,
-          chat_id: chatId 
-        });
+        const botUsername = import.meta.env.VITE_BOT_USERNAME || 'your_bot';
         
-        setDebug(prev => [...prev, `Prepared data: ${data}`]);
-        setDebug(prev => [...prev, `Data length: ${data.length}`]);
+        // Создаем deep link для возврата в бота с информацией о подарке
+        const deepLink = `https://t.me/${botUsername}?start=gift_${giftId}_chat_${chatId}`;
         
-        // Проверяем, поддерживается ли sendData
-        if (typeof tg.sendData === 'function') {
-          setDebug(prev => [...prev, 'Calling sendData...']);
-          tg.sendData(data);
-          setDebug(prev => [...prev, 'sendData called successfully']);
-        } else {
-          setDebug(prev => [...prev, 'sendData not available!']);
-          alert('Метод sendData недоступен. Версия WebApp: ' + tg.version);
-          return;
-        }
+        setDebug(prev => [...prev, `Deep link: ${deepLink}`]);
+        setDebug(prev => [...prev, 'Opening link and closing...']);
         
-        // Закрываем webapp с небольшой задержкой
-        setDebug(prev => [...prev, 'Closing in 500ms...']);
+        // Открываем deep link
+        tg.openTelegramLink(deepLink);
+        
+        // Закрываем webapp
         setTimeout(() => {
-          setDebug(prev => [...prev, 'Calling close...']);
           tg.close();
-        }, 500);
+        }, 100);
         
       } catch (error) {
         setDebug(prev => [...prev, `Error: ${error.message}`]);
-        setDebug(prev => [...prev, `Error stack: ${error.stack}`]);
         alert(`Ошибка: ${error.message}`);
       }
     } else {
       setDebug(prev => [...prev, 'WebApp not available!']);
-      alert('Telegram WebApp не доступен. Debug: ' + debug.join(', '));
+      alert('Telegram WebApp не доступен');
     }
   };
 
