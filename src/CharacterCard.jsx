@@ -11,8 +11,8 @@ const CharacterCard = ({ character }) => {
   };
 
   return (
-    <div className="bg-gray-800 rounded-lg overflow-hidden shadow-lg">
-      <div className="w-full bg-gray-800">
+    <div className="bg-gray-950 rounded-lg overflow-hidden shadow-lg">
+      <div className="w-full bg-gray-950">
         <img src={character.image} alt={character.name} className="w-full h-auto" />
       </div>
       <div className="p-6">

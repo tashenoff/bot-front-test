@@ -2,13 +2,11 @@ import React from 'react';
 
 const GiftCard = ({ gift, showBuyButton = false, onSelect }) => {
   return (
-    <div className="bg-gray-800 rounded-lg overflow-hidden shadow-lg hover:bg-gray-750 transition-colors flex flex-col">
-      <div className="w-full h-48 bg-gray-900 overflow-hidden">
-        <img src={gift.image} alt={gift.name} className="w-full h-full object-cover" />
-      </div>
-      <div className="p-4 text-center flex flex-col flex-grow">
+    <div className="bg-gray-950 rounded-lg overflow-hidden shadow-lg hover:bg-gray-800 transition-colors relative h-64">
+      <img src={gift.image} alt={gift.name} className="w-full h-full object-cover" />
+      <div className="absolute inset-0 bg-black bg-opacity-50 flex flex-col justify-end p-4">
         <h3 className="text-xl font-bold mb-2 text-white">{gift.name}</h3>
-        <p className="text-gray-400 text-sm mb-4 flex-grow">{gift.effect_description}</p>
+        <p className="text-gray-300 text-sm mb-4">{gift.effect_description}</p>
         <div className="text-purple-400 font-bold text-lg mb-4">
           {gift.price} 🌟
         </div>

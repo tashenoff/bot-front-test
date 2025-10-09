@@ -59,7 +59,7 @@ const Characters = () => {
   const hasMore = visibleCount < filteredCharacters.length;
 
   return (
-    <div className="min-h-screen bg-gray-900 py-8">
+    <div className="min-h-screen bg-black py-8">
       <div className="container mx-auto px-4">
         <h1 className="text-4xl font-bold text-center text-purple-400 mb-8">Все персонажи</h1>
         <div className="mb-6 relative">
@@ -71,7 +71,7 @@ const Characters = () => {
             placeholder="Поиск по персонажам..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 rounded-lg bg-gray-800 text-white border border-gray-600 focus:outline-none focus:border-purple-500"
+            className="w-full pl-10 pr-4 py-2 rounded-lg bg-gray-900 text-white border border-gray-700 focus:outline-none focus:border-purple-500"
           />
         </div>
         {filteredCharacters.length === 0 ? (
@@ -97,7 +97,7 @@ const Characters = () => {
       {showArrow && (
         <button
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-          className="fixed bottom-8 right-8 bg-purple-500 hover:bg-purple-600 text-white p-3 rounded-full shadow-lg z-50 transition-opacity duration-300"
+          className="fixed bottom-24 right-8 bg-purple-500 hover:bg-purple-600 text-white p-3 rounded-full shadow-lg z-40 transition-opacity duration-300 md:bottom-8"
           aria-label="Наверх"
         >
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -84,9 +84,9 @@ const SceneSelection = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white">
+    <div className="min-h-screen bg-black text-white">
       {/* Header с информацией о персонаже */}
-      <div className="bg-gray-800 p-6">
+      <div className="bg-gray-900 p-6">
         <button
           onClick={handleBack}
           className="mb-4 text-purple-400 hover:text-purple-300 flex items-center gap-2"
@@ -112,7 +112,7 @@ const SceneSelection = () => {
             {availableScenes.map(scene => (
               <div
                 key={scene.id}
-                className="bg-gray-800 rounded-lg overflow-hidden shadow-lg hover:shadow-purple-500/20 transition-all duration-300 cursor-pointer transform hover:scale-105 relative"
+                className="bg-gray-950 rounded-lg overflow-hidden shadow-lg hover:shadow-purple-500/20 transition-all duration-300 cursor-pointer transform hover:scale-105 relative"
                 onClick={() => handleSceneSelect(scene)}
               >
                 <div className="relative">
@@ -166,7 +166,7 @@ const SceneSelection = () => {
       {showScrollTop && (
         <button
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-          className="fixed bottom-20 left-1/2 -translate-x-1/2 bg-purple-600 hover:bg-purple-700 text-white p-3 rounded-full shadow-lg transition-opacity duration-300 z-50"
+          className="fixed bottom-24 left-1/2 -translate-x-1/2 bg-purple-600 hover:bg-purple-700 text-white p-3 rounded-full shadow-lg transition-opacity duration-300 z-40 md:bottom-8 md:right-8 md:left-auto md:translate-x-0"
           aria-label="Прокрутить вверх"
         >
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -174,8 +174,6 @@ const SceneSelection = () => {
           </svg>
         </button>
       )}
-
-      <Footer />
 
     </div>
   );

@@ -2,67 +2,67 @@ import React from 'react';
 
 const Help = () => {
   return (
-    <div className="min-h-screen bg-gray-100 py-8">
+    <div className="min-h-screen bg-black py-8">
       <div className="max-w-4xl mx-auto px-4">
-        <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">Справка по боту</h1>
-          <p className="text-lg text-gray-700 mb-6">
+        <div className="bg-gray-950 rounded-lg shadow-md p-6 mb-8">
+          <h1 className="text-3xl font-bold text-white mb-4">Справка по боту</h1>
+          <p className="text-lg text-gray-300 mb-6">
             Добро пожаловать в справку по использованию бота. Здесь вы найдете всю необходимую информацию о функциях бота.
           </p>
         </div>
 
         <div className="space-y-8">
-          <section className="bg-white rounded-lg shadow-md p-6">
-            <h2 className="text-2xl font-semibold text-gray-900 mb-4">Введение</h2>
-            <p className="text-gray-700 mb-4">
+          <section className="bg-gray-950 rounded-lg shadow-md p-6">
+            <h2 className="text-2xl font-semibold text-white mb-4">Введение</h2>
+            <p className="text-gray-300 mb-4">
               Этот бот позволяет общаться с различными персонажами, отправлять подарки и исследовать разные миры и сцены.
             </p>
-            <ul className="list-disc list-inside text-gray-700 space-y-2">
+            <ul className="list-disc list-inside text-gray-300 space-y-2">
               <li>Выберите персонажа из меню для начала чата.</li>
               <li>Используйте кнопки меню для навигации.</li>
               <li>Отправляйте подарки, чтобы улучшить взаимодействие.</li>
             </ul>
           </section>
 
-          <section className="bg-white rounded-lg shadow-md p-6">
-            <h2 className="text-2xl font-semibold text-gray-900 mb-4">Персонажи</h2>
-            <p className="text-gray-700 mb-4">
+          <section className="bg-gray-950 rounded-lg shadow-md p-6">
+            <h2 className="text-2xl font-semibold text-white mb-4">Персонажи</h2>
+            <p className="text-gray-300 mb-4">
               Доступны различные персонажи с уникальными историями и личностями.
             </p>
-            <ul className="list-disc list-inside text-gray-700 space-y-2">
+            <ul className="list-disc list-inside text-gray-300 space-y-2">
               <li>Нажмите на карточку персонажа, чтобы начать общение.</li>
               <li>Каждый персонаж имеет свой фон и стиль разговора.</li>
               <li>Используйте /start для возврата к выбору персонажей.</li>
             </ul>
           </section>
 
-          <section className="bg-white rounded-lg shadow-md p-6">
-            <h2 className="text-2xl font-semibold text-gray-900 mb-4">Подарки</h2>
-            <p className="text-gray-700 mb-4">
+          <section className="bg-gray-950 rounded-lg shadow-md p-6">
+            <h2 className="text-2xl font-semibold text-white mb-4">Подарки</h2>
+            <p className="text-gray-300 mb-4">
               Отправьте подарки персонажам, чтобы сделать взаимодействие более увлекательным.
             </p>
-            <ul className="list-disc list-inside text-gray-700 space-y-2">
+            <ul className="list-disc list-inside text-gray-300 space-y-2">
               <li>Выберите подарок из меню подарков.</li>
               <li>Подарки влияют на настроение и ответы персонажа.</li>
               <li>Доступные подарки: вино, розы, белье и т.д.</li>
             </ul>
           </section>
 
-          <section className="bg-white rounded-lg shadow-md p-6">
-            <h2 className="text-2xl font-semibold text-gray-900 mb-4">Дополнительные функции</h2>
-            <p className="text-gray-700 mb-4">
+          <section className="bg-gray-950 rounded-lg shadow-md p-6">
+            <h2 className="text-2xl font-semibold text-white mb-4">Дополнительные функции</h2>
+            <p className="text-gray-300 mb-4">
               Бот поддерживает дополнительные возможности для улучшения опыта.
             </p>
-            <ul className="list-disc list-inside text-gray-700 space-y-2">
+            <ul className="list-disc list-inside text-gray-300 space-y-2">
               <li>Генерация изображений по запросу.</li>
               <li>Случайные сцены и миры.</li>
               <li>Настройка доверия и отношений с персонажами.</li>
             </ul>
           </section>
 
-          <section className="bg-white rounded-lg shadow-md p-6">
-            <h2 className="text-2xl font-semibold text-gray-900 mb-4">Команды бота</h2>
-            <div className="text-gray-700 space-y-4">
+          <section className="bg-gray-950 rounded-lg shadow-md p-6">
+            <h2 className="text-2xl font-semibold text-white mb-4">Команды бота</h2>
+            <div className="text-gray-300 space-y-4">
               <div>
                 <h3 className="font-medium text-lg mb-2">🌟 Основные команды:</h3>
                 <ul className="list-disc list-inside space-y-1">
@@ -104,18 +104,18 @@ const Help = () => {
               </div>
               <div>
                 <h3 className="font-medium text-lg mb-2">❓ Если что-то не работает:</h3>
-                <p className="text-gray-700">Попробуйте /reset или обратитесь к администратору.</p>
+                <p className="text-gray-300">Попробуйте /reset или обратитесь к администратору.</p>
               </div>
             </div>
           </section>
 
-          <section className="bg-white rounded-lg shadow-md p-6">
-            <h2 className="text-2xl font-semibold text-gray-900 mb-4">Поддержка</h2>
-            <p className="text-gray-700 mb-4">
+          <section className="bg-gray-950 rounded-lg shadow-md p-6">
+            <h2 className="text-2xl font-semibold text-white mb-4">Поддержка</h2>
+            <p className="text-gray-300 mb-4">
               Если у вас возникли проблемы, обратитесь к администратору или используйте /help в боте.
             </p>
-            <p className="text-gray-700">
-              Для вопросов по фронтенду посетите <a href="/" className="text-blue-600 hover:underline">главную страницу</a>.
+            <p className="text-gray-300">
+              Для вопросов по фронтенду посетите <a href="/" className="text-purple-400 hover:text-purple-300">главную страницу</a>.
             </p>
           </section>
         </div>

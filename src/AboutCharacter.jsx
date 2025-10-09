@@ -2,7 +2,7 @@ import React from 'react';
 
 const AboutCharacter = ({ character }) => {
   return (
-    <div className="bg-gray-800 rounded-lg shadow-lg p-6 mb-8">
+    <div className="bg-gray-950 rounded-lg shadow-lg p-6 mb-8">
       <div className="flex flex-col md:flex-row gap-6 items-center">
      
         <div className="flex-1">
