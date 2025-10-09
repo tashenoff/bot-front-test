@@ -14,7 +14,7 @@ const CharacterGallery = ({ character }) => {
   }
 
   return (
-    <div className="mb-8">
+    <div className="mb-4">
       <h3 className="text-xl font-bold mb-4 text-center text-purple-400">Галерея персонажа</h3>
       <Swiper
         spaceBetween={20}

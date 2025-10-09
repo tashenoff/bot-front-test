@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import scenes from './data/scenes';
 import characters from './data/characters';
+import scenes from './data/scenes';
 import AboutCharacter from './AboutCharacter';
 import CharacterGallery from './CharacterGallery';
-import Footer from './Footer';
+import CharacterVideos from './CharacterVideos';
 import { handleSceneSelection } from './utils/telegramUtils';
 
-const SceneSelection = () => {
+const CharacterPage = () => {
   const { characterId } = useParams();
   const navigate = useNavigate();
   const [character, setCharacter] = useState(null);
@@ -24,12 +24,12 @@ const SceneSelection = () => {
       setCharacter(selectedCharacter);
 
       // Фильтруем сцены по available_scenes персонажа
-      const characterScenes = scenes.filter(scene =>
-        selectedCharacter.available_scenes &&
-        selectedCharacter.available_scenes.includes(scene.id)
-      );
-
-      setAvailableScenes(characterScenes);
+      if (selectedCharacter.available_scenes) {
+        const characterScenes = scenes.filter(scene =>
+          selectedCharacter.available_scenes.includes(scene.id)
+        );
+        setAvailableScenes(characterScenes);
+      }
     }
 
     setLoading(false);
@@ -37,20 +37,27 @@ const SceneSelection = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      setShowScrollTop(window.scrollY > 300);
+      const scrollY = window.scrollY;
+      const windowHeight = window.innerHeight;
+      const documentHeight = document.documentElement.scrollHeight;
+      
+      // Показываем кнопку только в середине страницы
+      // Не показываем в первых 300px и в последних 300px
+      const showButton = scrollY > 300 && scrollY < (documentHeight - windowHeight - 300);
+      setShowScrollTop(showButton);
     };
 
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const handleBack = () => {
+    navigate('/');
+  };
+
   const handleSceneSelect = (scene) => {
     if (!character) return;
     handleSceneSelection(character, scene, botUsername);
-  };
-
-  const handleBack = () => {
-    navigate('/');
   };
 
   if (loading) {
@@ -71,7 +78,7 @@ const SceneSelection = () => {
 
   return (
     <div className="min-h-screen bg-black text-white">
-      {/* Header с информацией о персонаже */}
+      {/* Header с кнопкой назад */}
       <div className="bg-gray-900 p-6">
         <button
           onClick={handleBack}
@@ -79,18 +86,20 @@ const SceneSelection = () => {
         >
           ← Назад к персонажам
         </button>
-
       </div>
 
+      {/* Видео персонажа */}
+      <div className="container mx-auto px-4 py-4">
+        <CharacterVideos character={character} />
+      </div>
 
-
-      {/* O персонаже */}
-      <div className="container mx-auto px-4 py-8">
+      {/* О персонаже */}
+      <div className="container mx-auto px-4 py-4">
         <AboutCharacter character={character} />
       </div>
 
       {/* Выбор сцен */}
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-4">
         <h2 className="text-xl font-bold mb-6 text-center text-purple-400">Выберите сцену для общения</h2>
 
         {availableScenes.length > 0 ? (
@@ -127,32 +136,17 @@ const SceneSelection = () => {
             <p className="text-gray-400 text-lg">Для этого персонажа пока нет доступных сцен</p>
           </div>
         )}
-
-        {/* Кнопка для случайной сцены */}
-        {availableScenes.length > 1 && (
-          <div className="text-center mt-4">
-            <button
-              onClick={() => {
-                const randomScene = availableScenes[Math.floor(Math.random() * availableScenes.length)];
-                handleSceneSelect(randomScene);
-              }}
-              className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold py-3 px-8 rounded-full transition duration-300 transform hover:scale-105"
-            >
-              Случайная сцена
-            </button>
-          </div>
-        )}
       </div>
 
       {/* Галерея персонажа */}
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-4">
         <CharacterGallery character={character} />
       </div>
 
       {showScrollTop && (
         <button
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-          className="fixed bottom-24 left-1/2 -translate-x-1/2 bg-purple-600 hover:bg-purple-700 text-white p-3 rounded-full shadow-lg transition-opacity duration-300 z-40 md:bottom-8 md:right-8 md:left-auto md:translate-x-0"
+          className="fixed bottom-8 right-8 bg-black bg-opacity-30 hover:bg-opacity-50 text-white p-3 rounded-full shadow-lg transition-all duration-300 z-40 backdrop-blur-sm"
           aria-label="Прокрутить вверх"
         >
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -160,9 +154,8 @@ const SceneSelection = () => {
           </svg>
         </button>
       )}
-
     </div>
   );
 };
 
-export default SceneSelection;
+export default CharacterPage;

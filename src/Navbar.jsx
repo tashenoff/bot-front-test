@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { FaHome, FaUsers, FaGift, FaQuestionCircle } from 'react-icons/fa';
+import { FaHome, FaUsers, FaQuestionCircle } from 'react-icons/fa';
 
 const Navbar = () => {
   const location = useLocation();
@@ -8,7 +8,6 @@ const Navbar = () => {
   const menuItems = [
     { to: '/', label: 'Главная', icon: <FaHome /> },
     { to: '/characters', label: 'Персонажи', icon: <FaUsers /> },
-    { to: '/gifts', label: 'Подарки', icon: <FaGift /> },
     { to: '/help', label: 'Помощь', icon: <FaQuestionCircle /> }
   ];
 

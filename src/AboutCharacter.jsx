@@ -2,13 +2,14 @@ import React from 'react';
 
 const AboutCharacter = ({ character }) => {
   return (
-    <div className="bg-gray-950 rounded-lg shadow-lg p-6 mb-8">
+    <div className="bg-gray-950 rounded-lg shadow-lg p-6 mb-4">
       <div className="flex flex-col md:flex-row gap-6 items-center">
      
         <div className="flex-1">
           <h2 className="text-3xl font-bold text-purple-400 mb-4">{character.name}</h2>
-          <p className="text-gray-300 leading-relaxed">{character.description}</p>
-          <div className="mt-2">
+          <p className="text-gray-300 leading-relaxed mb-6">{character.description}</p>
+          
+          <div className="mb-6">
             <h3 className="text-lg font-semibold text-purple-400 mb-2">Интересы:</h3>
             <div className="flex flex-wrap gap-2">
               {character.interests.map((interest) => (
@@ -16,7 +17,8 @@ const AboutCharacter = ({ character }) => {
               ))}
             </div>
           </div>
-          <div className="mt-2">
+          
+          <div>
             <h3 className="text-lg font-semibold text-red-400 mb-2">Не нравится:</h3>
             <div className="flex flex-wrap gap-2">
               {character.dislikes.map((dislike) => (
