@@ -74,6 +74,15 @@ const Subscription = () => {
           {language === 'en' ? 'Get access to exclusive characters and features' : 'Получите доступ к эксклюзивным персонажам и функциям'}
         </p>
 
+        {/* Картинка персонажа Chris */}
+        <div className="flex justify-center mb-8">
+          <img 
+            src="/images/stream.png" 
+            alt="Chris Pixel" 
+            className="w-32 h-32 md:w-40 md:h-40 rounded-full object-cover border-4 border-purple-500 shadow-lg"
+          />
+        </div>
+
         {/* Месячная подписка */}
         <div className="grid grid-cols-1 gap-6 max-w-md mx-auto">
           <div className="bg-gray-950 rounded-lg overflow-hidden shadow-lg hover:bg-gray-800 transition-colors relative">
@@ -83,8 +92,16 @@ const Subscription = () => {
               <h3 className="text-2xl font-bold mb-2 text-white">
                 {language === 'en' ? 'Premium Month' : 'Премиум месяц'}
               </h3>
-              <div className="text-4xl font-bold text-purple-400 mb-4">
-                199 ⭐
+              <div className="flex items-center justify-center gap-4 mb-4">
+                <div className="text-4xl font-bold text-yellow-400">
+                  1 ⭐
+                </div>
+                <div className="text-2xl text-gray-400 line-through opacity-75">
+                  199 ⭐
+                </div>
+              </div>
+              <div className="inline-block bg-red-600 text-white text-xs font-bold px-3 py-1 rounded-full mb-4">
+                🔥 {language === 'en' ? 'SPECIAL OFFER' : 'СПЕЦИАЛЬНАЯ АКЦИЯ'}
               </div>
               <div className="text-gray-300 text-sm mb-6 space-y-2">
                 <p>🎮 {language === 'en' ? 'Exclusive characters' : 'Эксклюзивные персонажи'}</p>
