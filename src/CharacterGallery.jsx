@@ -1,21 +1,36 @@
 import React from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation } from 'swiper/modules';
+import { useTranslation } from './hooks/useTranslation';
 import 'swiper/css';
 import 'swiper/css/navigation';
 
 const CharacterGallery = ({ character }) => {
+  const { t, language } = useTranslation();
+
+  // Получаем локализованное имя
+  const getName = () => {
+    if (typeof character.name === 'object') {
+      return character.name[language] || character.name.ru;
+    }
+    return character.name;
+  };
+
+  const name = getName();
+
   if (!character.gallery || character.gallery.length === 0) {
     return (
       <div className="text-center py-8 text-gray-400">
-        Галерея не доступна
+        {language === 'en' ? 'Gallery not available' : 'Галерея не доступна'}
       </div>
     );
   }
 
   return (
     <div className="mb-4">
-      <h3 className="text-xl font-bold mb-4 text-center text-purple-400">Галерея персонажа</h3>
+      <h3 className="text-xl font-bold mb-4 text-center text-purple-400">
+        {language === 'en' ? 'Character Gallery' : 'Галерея персонажа'}
+      </h3>
       <Swiper
         spaceBetween={20}
         slidesPerView={1}
@@ -32,7 +47,7 @@ const CharacterGallery = ({ character }) => {
             <div className="relative w-full h-auto max-h-[80vh] flex items-center justify-center">
               <img 
                 src={img} 
-                alt={`Галерея ${character.name}`}
+                alt={`Галерея ${name}`}
                 className="w-full h-auto max-h-[80vh] object-contain rounded-lg" 
               />
               <div className="absolute inset-0 bg-black/20 rounded-lg"></div>

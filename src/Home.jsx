@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import CharacterCard from './CharacterCard';
 import GiftCard from './GiftCard';
 import { FaComments, FaUserFriends, FaBrain, FaGift } from 'react-icons/fa';
+import { useTranslation } from './hooks/useTranslation';
 
 const Home = () => {
+  const { t } = useTranslation();
   const botUsername = import.meta.env.VITE_BOT_USERNAME;
   const [characters, setCharacters] = useState([]);
   const [gifts, setGifts] = useState([]);
@@ -41,10 +43,10 @@ const Home = () => {
   };
 
   const advantages = [
-    { icon: <FaComments size={30} className="mx-auto mb-4 text-purple-400" />, title: 'Живые диалоги', description: 'Наши AI-персонажи отлично говорят по-русски, поддерживая глубокие и осмысленные беседы.' },
-    { icon: <FaUserFriends size={30} className="mx-auto mb-4 text-purple-400" />, title: 'Уникальные личности', description: 'Каждый персонаж обладает своим характером, интересами и тем, что ему не нравится.' },
-    { icon: <FaBrain size={30} className="mx-auto mb-4 text-purple-400" />, title: 'Динамическая память', description: 'Персонажи запоминают детали вашего диалога, делая общение более личным.' },
-    { icon: <FaGift size={30} className="mx-auto mb-4 text-purple-400" />, title: 'Интерактивные подарки', description: 'Удивляйте персонажей, даря им подарки, и наблюдайте за их уникальной реакцией.' }
+    { icon: <FaComments size={30} className="mx-auto mb-4 text-purple-400" />, title: t('liveDialogues'), description: t('liveDialoguesDesc') },
+    { icon: <FaUserFriends size={30} className="mx-auto mb-4 text-purple-400" />, title: t('uniquePersonalities'), description: t('uniquePersonalitiesDesc') },
+    { icon: <FaBrain size={30} className="mx-auto mb-4 text-purple-400" />, title: t('dynamicMemory'), description: t('dynamicMemoryDesc') },
+    { icon: <FaGift size={30} className="mx-auto mb-4 text-purple-400" />, title: t('interactiveGifts'), description: t('interactiveGiftsDesc') }
   ];
 
   return (
@@ -54,7 +56,7 @@ const Home = () => {
           Waifu Dreams
         </h1>
         <p className="text-lg md:text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
-          Погрузитесь в общение с глубокими AI-личностями, свободными от обычных ограничений. Откройте для себя диалоги без запретных тем.
+          {t('homeSubtitle')}
         </p>
         <a
           href={`https://t.me/${botUsername}`}
@@ -63,12 +65,12 @@ const Home = () => {
           rel="noopener noreferrer"
           className="bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-8 rounded-full transition duration-300 ease-in-out transform hover:scale-105"
         >
-          Начать общение в Telegram
+          {t('startChatTelegram')}
         </a>
       </div>
 
       <div className="w-full max-w-6xl mx-auto px-4 py-16">
-        <h2 className="text-4xl font-bold text-center mb-12">Наши Персонажи</h2>
+        <h2 className="text-4xl font-bold text-center mb-12">{t('ourCharacters')}</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {characters.map(character => (
             <CharacterCard key={character.id} character={character} />
@@ -77,7 +79,7 @@ const Home = () => {
       </div>
 
       <div className="w-full max-w-6xl mx-auto px-4 py-16">
-        <h2 className="text-4xl font-bold text-center mb-12">Наши Преимущества</h2>
+        <h2 className="text-4xl font-bold text-center mb-12">{t('ourAdvantages')}</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 text-center">
           {advantages.map((adv, index) => (
             <div key={index} className="bg-gray-950 p-6 rounded-lg shadow-lg">
@@ -90,7 +92,7 @@ const Home = () => {
       </div>
 
       <div className="w-full max-w-6xl mx-auto px-4 py-16">
-        <h2 className="text-4xl font-bold text-center mb-12">Доступные Подарки</h2>
+        <h2 className="text-4xl font-bold text-center mb-12">{t('availableGifts')}</h2>
         <div className="grid grid-cols-1 gap-8">
           {gifts.map(gift => (
             <GiftCard key={gift.id} gift={gift} />
@@ -105,9 +107,9 @@ const Home = () => {
         >
           <div className="absolute inset-0 bg-black opacity-60"></div>
           <div className="relative z-10">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Готовы погрузиться?</h2>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">{t('readyToDive')}</h2>
             <p className="text-gray-300 mb-8 max-w-xl mx-auto">
-              Ваши персонажи уже ждут вас. Начните свое незабываемое приключение в мире Waifu Dreams прямо сейчас.
+              {t('ctaDescription')}
             </p>
             <a
               href={`https://t.me/${botUsername}`}
@@ -116,7 +118,7 @@ const Home = () => {
               rel="noopener noreferrer"
               className="bg-pink-600 hover:bg-pink-700 text-white font-bold py-4 px-10 rounded-full transition duration-300 ease-in-out transform hover:scale-105"
             >
-              Перейти к боту
+              {t('goToBot')}
             </a>
           </div>
         </div>

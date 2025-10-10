@@ -6,8 +6,10 @@ import AboutCharacter from './AboutCharacter';
 import CharacterGallery from './CharacterGallery';
 import CharacterVideos from './CharacterVideos';
 import { handleSceneSelection } from './utils/telegramUtils';
+import { useTranslation } from './hooks/useTranslation';
 
 const CharacterPage = () => {
+  const { t, language } = useTranslation();
   const { characterId } = useParams();
   const navigate = useNavigate();
   const [character, setCharacter] = useState(null);
@@ -15,6 +17,21 @@ const CharacterPage = () => {
   const [loading, setLoading] = useState(true);
   const [showScrollTop, setShowScrollTop] = useState(false);
   const botUsername = import.meta.env.VITE_BOT_USERNAME;
+
+  // Функции для получения локализованных данных сцен
+  const getSceneName = (scene) => {
+    if (typeof scene.name === 'object') {
+      return scene.name[language] || scene.name.ru;
+    }
+    return scene.name;
+  };
+
+  const getSceneIntroText = (scene) => {
+    if (typeof scene.intro_text === 'object') {
+      return scene.intro_text[language] || scene.intro_text.ru;
+    }
+    return scene.intro_text;
+  };
 
   useEffect(() => {
     // Найти персонажа в локальных данных
@@ -63,7 +80,7 @@ const CharacterPage = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-900 text-white flex items-center justify-center">
-        <div className="text-xl">Загрузка...</div>
+        <div className="text-xl">{t('loading')}</div>
       </div>
     );
   }
@@ -71,7 +88,7 @@ const CharacterPage = () => {
   if (!character) {
     return (
       <div className="min-h-screen bg-gray-900 text-white flex items-center justify-center">
-        <div className="text-xl">Персонаж не найден</div>
+        <div className="text-xl">{t('characterNotFound')}</div>
       </div>
     );
   }
@@ -84,7 +101,7 @@ const CharacterPage = () => {
           onClick={handleBack}
           className="mb-4 text-purple-400 hover:text-purple-300 flex items-center gap-2"
         >
-          ← Назад к персонажам
+          {t('backToCharacters')}
         </button>
       </div>
 
@@ -100,40 +117,45 @@ const CharacterPage = () => {
 
       {/* Выбор сцен */}
       <div className="container mx-auto px-4 py-4">
-        <h2 className="text-xl font-bold mb-6 text-center text-purple-400">Выберите сцену для общения</h2>
+        <h2 className="text-xl font-bold mb-6 text-center text-purple-400">{t('chooseSceneForChat')}</h2>
 
         {availableScenes.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {availableScenes.map(scene => (
-              <div
-                key={scene.id}
-                className="bg-gray-950 rounded-lg overflow-hidden shadow-lg hover:shadow-purple-500/20 transition-all duration-300 cursor-pointer transform hover:scale-105 relative"
-                onClick={() => handleSceneSelect(scene)}
-              >
-                <div className="relative">
-                  <img
-                    src={scene.image}
-                    alt={scene.name}
-                    className="w-full h-48 object-cover"
-                  />
-                  <div className="absolute inset-0 flex items-center justify-center bg-black/10">
-                    <svg className="w-12 h-12 text-white opacity-80" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
-                    </svg>
+            {availableScenes.map(scene => {
+              const sceneName = getSceneName(scene);
+              const sceneIntroText = getSceneIntroText(scene);
+              
+              return (
+                <div
+                  key={scene.id}
+                  className="bg-gray-950 rounded-lg overflow-hidden shadow-lg hover:shadow-purple-500/20 transition-all duration-300 cursor-pointer transform hover:scale-105 relative"
+                  onClick={() => handleSceneSelect(scene)}
+                >
+                  <div className="relative">
+                    <img
+                      src={scene.image}
+                      alt={sceneName}
+                      className="w-full h-48 object-cover"
+                    />
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/10">
+                      <svg className="w-12 h-12 text-white opacity-80" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
+                      </svg>
+                    </div>
+                  </div>
+                  <div className="p-4">
+                    <h3 className="text-xl font-bold mb-2 text-purple-400">{sceneName}</h3>
+                    {sceneIntroText && (
+                      <p className="text-gray-400 text-sm line-clamp-3">{sceneIntroText}</p>
+                    )}
                   </div>
                 </div>
-                <div className="p-4">
-                  <h3 className="text-xl font-bold mb-2 text-purple-400">{scene.name}</h3>
-                  {scene.intro_text && (
-                    <p className="text-gray-400 text-sm line-clamp-3">{scene.intro_text}</p>
-                  )}
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         ) : (
           <div className="text-center py-8">
-            <p className="text-gray-400 text-lg">Для этого персонажа пока нет доступных сцен</p>
+            <p className="text-gray-400 text-lg">{t('noScenesAvailable')}</p>
           </div>
         )}
       </div>
@@ -147,7 +169,7 @@ const CharacterPage = () => {
         <button
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
           className="fixed bottom-8 right-8 bg-black bg-opacity-30 hover:bg-opacity-50 text-white p-3 rounded-full shadow-lg transition-all duration-300 z-40 backdrop-blur-sm"
-          aria-label="Прокрутить вверх"
+          aria-label={t('scrollUp')}
         >
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />

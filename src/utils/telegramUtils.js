@@ -60,3 +60,23 @@ export const handleSceneSelection = (character, scene, botUsername) => {
     openTelegramLink(deepLink);
   }
 };
+
+/**
+ * Отправляет данные боту через Telegram WebApp
+ * @param {Object} data - Данные для отправки
+ */
+export const sendDataToBot = (data) => {
+  try {
+    if (window.Telegram && window.Telegram.WebApp) {
+      console.log('Отправка данных боту:', data);
+      window.Telegram.WebApp.sendData(JSON.stringify(data));
+    } else {
+      console.error('Telegram WebApp API недоступен');
+      // Фоллбэк - можно показать ошибку пользователю
+      alert('Ошибка: Telegram WebApp API недоступен');
+    }
+  } catch (error) {
+    console.error('Ошибка при отправке данных боту:', error);
+    alert('Произошла ошибка при отправке данных');
+  }
+};

@@ -100,8 +100,14 @@ const characters = [
   },
     {
       id: 'teacher',
-      name: 'Анна',
-      description: 'Строгая, но справедливая учительница. Она знает, как получить от тебя максимум',
+      name: {
+        ru: 'Анна',
+        en: 'Anna'
+      },
+      description: {
+        ru: 'Строгая, но справедливая учительница. Она знает, как получить от тебя максимум',
+        en: 'Strict but fair teacher. She knows how to get the best out of you'
+      },
       image: '/images/teacher.png',
       world_id: 'real_world',
       available_scenes: ['private_lesson'],
@@ -112,8 +118,14 @@ const characters = [
         '/images/character/gallery/teacher/3.png',
         '/images/character/gallery/teacher/4.png'
       ],
-      interests: ['литература', 'искусство', 'театр', 'красное вино', 'интеллектуальные беседы', 'психология отношений'],
-      dislikes: ['глупость', 'непунктуальность', 'неуважение', 'инфантильность']
+      interests: {
+        ru: ['литература', 'искусство', 'театр', 'красное вино', 'интеллектуальные беседы', 'психология отношений'],
+        en: ['literature', 'art', 'theater', 'red wine', 'intellectual conversations', 'relationship psychology']
+      },
+      dislikes: {
+        ru: ['глупость', 'непунктуальность', 'неуважение', 'инфантильность'],
+        en: ['stupidity', 'unpunctuality', 'disrespect', 'infantilism']
+      }
     },
   {
     id: 'traner',
@@ -128,12 +140,19 @@ const characters = [
   },
     {
       id: 'gamer_streamer',
-      name: 'Крис Пиксель',
-      description: 'Язвительная и сексуальная стримерша, королева хорроров и шутеров на Twitch. Её стримы взрывают чат, но хейтеры и тёмные секреты держат её на грани.',
+      name: {
+        ru: 'Крис Пиксель',
+        en: 'Chris Pixel'
+      },
+      description: {
+        ru: 'Язвительная и сексуальная стримерша, королева хорроров и шутеров на Twitch. Её стримы взрывают чат, но хейтеры и тёмные секреты держат её на грани.',
+        en: 'Sarcastic and sexy streamer, queen of horror games and shooters on Twitch. Her streams blow up the chat, but haters and dark secrets keep her on edge.'
+      },
       image: '/images/stream.png',
       world_id: 'real_world',
       available_scenes: ['kris_scene'],
       enabled: true,
+      premium_only: true,
       gallery: [
         '/images/character/gallery/khris/1.png',
         '/images/character/gallery/khris/2.png',
@@ -141,13 +160,25 @@ const characters = [
         
 
       ],
-      interests: ['гейминг', 'косплей', 'стримы', 'мемы', 'андеграундная музыка', 'психология чата'],
-      dislikes: ['хейтеры', 'донатеры-тролли', 'предательство', 'лаги']
+      interests: {
+        ru: ['гейминг', 'косплей', 'стримы', 'мемы', 'андеграундная музыка', 'психология чата'],
+        en: ['gaming', 'cosplay', 'streaming', 'memes', 'underground music', 'chat psychology']
+      },
+      dislikes: {
+        ru: ['хейтеры', 'донатеры-тролли', 'предательство', 'лаги'],
+        en: ['haters', 'troll donators', 'betrayal', 'lag']
+      }
     },
     {
       id: 'tiktok_alt_girl',
-      name: 'Мия Вайр',
-      description: 'Дерзкая TikTok-альтушка с тату и пирсингом, чьи мрачные тренды и мемы взрывают сеть. Её жизнь — это хайп, хейт и страсть.',
+      name: {
+        ru: 'Мия Вайр',
+        en: 'Mia Wire'
+      },
+      description: {
+        ru: 'Дерзкая TikTok-альтушка с тату и пирсингом, чьи мрачные тренды и мемы взрывают сеть. Её жизнь — это хайп, хейт и страсть.',
+        en: 'Bold TikTok alt-girl with tattoos and piercings, whose dark trends and memes blow up the net. Her life is hype, hate and passion.'
+      },
       image: '/images/alt.png',
       world_id: 'real_world',
       available_scenes: ['mia_studio'],
@@ -158,13 +189,25 @@ const characters = [
         '/images/character/gallery/mia/3.png',
         '/images/character/gallery/mia/4.png'
       ],
-      interests: ['TikTok', 'мемы', 'альт-мода', 'оккультная эстетика', 'чёрный юмор', 'тусовки'],
-      dislikes: ['хейтеры', 'фейковые блогеры', 'контроль спонсоров', 'скука']
+      interests: {
+        ru: ['TikTok', 'мемы', 'альт-мода', 'оккультная эстетика', 'чёрный юмор', 'тусовки'],
+        en: ['TikTok', 'memes', 'alt fashion', 'occult aesthetics', 'dark humor', 'parties']
+      },
+      dislikes: {
+        ru: ['хейтеры', 'фейковые блогеры', 'контроль спонсоров', 'скука'],
+        en: ['haters', 'fake bloggers', 'sponsor control', 'boredom']
+      }
     },
     {
       id: 'party_influencer',
-      name: 'Ника Спаркл',
-      description: 'Дерзкая и сексуальная инфлюенсерша, королева вечеринок и соцсетей. Она зажигает толпу и твой экран, но её жизнь — коктейль из хайпа, драм и страсти.',
+      name: {
+        ru: 'Ника Спаркл',
+        en: 'Nika Sparkle'
+      },
+      description: {
+        ru: 'Дерзкая и сексуальная инфлюенсерша, королева вечеринок и соцсетей. Она зажигает толпу и твой экран, но её жизнь — коктейль из хайпа, драм и страсти.',
+        en: 'Bold and sexy influencer, queen of parties and social media. She lights up crowds and your screen, but her life is a cocktail of hype, drama and passion.'
+      },
       image: '/images/inf.png',
       world_id: 'real_world',
       available_scenes: ['nika_club'],
@@ -174,8 +217,14 @@ const characters = [
         '/images/character/gallery/nika/2.png',
         '/images/character/gallery/nika/3.png'
       ],
-      interests: ['соцсети', 'мода', 'вечеринки', 'музыка', 'психология влияния', 'спонтанные приключения'],
-      dislikes: ['хейтеры', 'слабость', 'контроль спонсоров', 'скука']
+      interests: {
+        ru: ['соцсети', 'мода', 'вечеринки', 'музыка', 'психология влияния', 'спонтанные приключения'],
+        en: ['social media', 'fashion', 'parties', 'music', 'influence psychology', 'spontaneous adventures']
+      },
+      dislikes: {
+        ru: ['хейтеры', 'слабость', 'контроль спонсоров', 'скука'],
+        en: ['haters', 'weakness', 'sponsor control', 'boredom']
+      }
     }
 ];
 

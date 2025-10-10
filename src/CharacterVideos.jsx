@@ -1,9 +1,19 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
+import { useTranslation } from './hooks/useTranslation';
 
 const CharacterVideos = ({ character }) => {
-  const [isPlaying, setIsPlaying] = useState(false);
+  const { language } = useTranslation();
   const [hasError, setHasError] = useState(false);
-  const videoRef = useRef(null);
+
+  // Получаем локализованное имя
+  const getName = () => {
+    if (typeof character.name === 'object') {
+      return character.name[language] || character.name.ru;
+    }
+    return character.name;
+  };
+
+  const name = getName();
 
   // Сопоставление персонажей с видео
   const getCharacterVideo = (characterId) => {
@@ -24,29 +34,15 @@ const CharacterVideos = ({ character }) => {
     return null;
   }
 
-  const handlePlay = () => {
-    setIsPlaying(true);
-  };
-
-  const handlePause = () => {
-    setIsPlaying(false);
-  };
-
   const handleError = () => {
     setHasError(true);
-  };
-
-  const handleCustomPlay = () => {
-    if (videoRef.current) {
-      videoRef.current.play();
-    }
   };
 
   if (hasError) {
     return (
       <div className="bg-gray-950 rounded-lg shadow-lg p-6 mb-4">
         <h2 className="text-2xl font-bold text-purple-400 mb-4 text-center">
-          {character.name}
+          {name}
         </h2>
         <div className="text-center py-8">
           <p className="text-gray-400">Не удалось загрузить видео</p>
@@ -61,18 +57,14 @@ const CharacterVideos = ({ character }) => {
   return (
     <div className="bg-gray-950 rounded-lg shadow-lg p-6 mb-4">
       <h2 className="text-2xl font-bold text-purple-400 mb-4 text-center">
-        {character.name}
+        {name}
       </h2>
       
-      <div className="relative max-w-2xl mx-auto">
+      <div className="max-w-2xl mx-auto">
         <video
-          ref={videoRef}
           className="w-full h-auto rounded-lg shadow-lg"
           controls
           preload="metadata"
-          onPlay={handlePlay}
-          onPause={handlePause}
-          onEnded={handlePause}
           onError={handleError}
           poster={character.image}
         >
@@ -86,22 +78,6 @@ const CharacterVideos = ({ character }) => {
             </a>
           </p>
         </video>
-
-        {/* Кастомная кнопка play - показывается только когда видео не воспроизводится */}
-        {!isPlaying && (
-          <div 
-            className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30 rounded-lg pointer-events-none"
-          >
-            <div 
-              className="bg-purple-600 hover:bg-purple-700 rounded-full p-4 transition-colors cursor-pointer pointer-events-auto"
-              onClick={handleCustomPlay}
-            >
-              <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
-              </svg>
-            </div>
-          </div>
-        )}
       </div>
 
     </div>

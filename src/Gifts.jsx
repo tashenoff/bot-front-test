@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import GiftCard from './GiftCard';
+import { useTranslation } from './hooks/useTranslation';
+import giftsData from './data/gifts';
 
 const Gifts = () => {
+  const { language } = useTranslation();
   const [gifts, setGifts] = useState([]);
   const [chatId, setChatId] = useState(null);
 
@@ -19,11 +22,8 @@ const Gifts = () => {
     const chat = params.get('chat_id');
     setChatId(chat);
 
-    // Загружаем подарки
-    fetch('/gifts.json')
-      .then(response => response.json())
-      .then(data => setGifts(data))
-      .catch(error => console.error('Error loading gifts:', error));
+    // Загружаем подарки из локальных данных
+    setGifts(giftsData);
   }, []);
 
   const handleGiftSelect = (giftId) => {
@@ -45,10 +45,10 @@ const Gifts = () => {
         
       } catch (error) {
         console.error('Error selecting gift:', error);
-        alert(`Ошибка: ${error.message}`);
+        alert(language === 'en' ? `Error: ${error.message}` : `Ошибка: ${error.message}`);
       }
     } else {
-      alert('Telegram WebApp не доступен');
+      alert(language === 'en' ? 'Telegram WebApp not available' : 'Telegram WebApp не доступен');
     }
   };
 
@@ -56,10 +56,10 @@ const Gifts = () => {
     <div className="min-h-screen bg-black text-white p-4">
       <div className="max-w-6xl mx-auto">
         <h1 className="text-4xl font-bold text-center mb-8 bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">
-          🎁 Магазин подарков
+          {language === 'en' ? '🎁 Gift Shop' : '🎁 Магазин подарков'}
         </h1>
         <p className="text-center text-gray-400 mb-8">
-          Выберите подарок, чтобы порадовать персонажа
+          {language === 'en' ? 'Choose a gift to delight the character' : 'Выберите подарок, чтобы порадовать персонажа'}
         </p>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
