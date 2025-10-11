@@ -79,10 +79,10 @@ const Characters = () => {
   const hasMore = visibleCount < filteredCharacters.length;
 
   return (
-    <div className="min-h-screen py-8">
+    <div className="min-h-screen py-4">
       <div className="container mx-auto px-4">
-        <h1 className="text-4xl font-bold text-center text-purple-400 mb-8">{t('allCharacters')}</h1>
-        <div className="mb-6 relative">
+        <h1 className="text-2xl font-bold text-center text-purple-400 mb-4">{t('allCharacters')}</h1>
+        <div className="mb-4 relative">
           <svg className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
           </svg>
