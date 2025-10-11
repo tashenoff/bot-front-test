@@ -79,7 +79,7 @@ const Characters = () => {
   const hasMore = visibleCount < filteredCharacters.length;
 
   return (
-    <div className="min-h-screen bg-black py-8">
+    <div className="min-h-screen py-8">
       <div className="container mx-auto px-4">
         <h1 className="text-4xl font-bold text-center text-purple-400 mb-8">{t('allCharacters')}</h1>
         <div className="mb-6 relative">
@@ -103,7 +103,7 @@ const Characters = () => {
           </div>
         ) : (
           <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-2 gap-3">
               {visibleCharacters.map(character => (
                 <CharacterCard key={character.id} character={character} />
               ))}

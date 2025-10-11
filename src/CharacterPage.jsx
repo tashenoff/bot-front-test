@@ -69,7 +69,7 @@ const CharacterPage = () => {
   }, []);
 
   const handleBack = () => {
-    navigate('/');
+    navigate('/characters');
   };
 
   const handleSceneSelect = (scene) => {
