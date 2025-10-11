@@ -31,7 +31,7 @@ const Navbar = () => {
   return (
     <>
       {/* Десктопный навбар (верхний) */}
-      <nav className="hidden md:block bg-gray-950/80 backdrop-blur-lg shadow-lg sticky top-0 z-50 border-b border-gray-800/50">
+      <nav className="hidden md:block bg-gray-950/80 backdrop-blur-lg shadow-lg border-b border-gray-800/50">
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex justify-between items-center h-16">
             {/* Логотип */}
@@ -127,7 +127,7 @@ const Navbar = () => {
       </nav>
 
       {/* Мобильный хедер (логотип + переключатель языка) */}
-      <header className="md:hidden bg-gray-950/80 backdrop-blur-lg shadow-lg sticky top-0 z-40 border-b border-gray-800/50">
+      <header className="md:hidden bg-gray-950/80 backdrop-blur-lg shadow-lg border-b border-gray-800/50">
         <div className="flex justify-between items-center h-16 px-4">
           <Link to="/" className="flex items-center space-x-2">
             <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">
