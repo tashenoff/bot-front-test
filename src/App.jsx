@@ -7,7 +7,7 @@ import SceneSelection from './SceneSelection';
 import CharacterPage from './CharacterPage';
 import Gifts from './Gifts';
 import Subscription from './Subscription';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { LanguageProvider } from './contexts/LanguageContext';
 
 function App() {
@@ -16,7 +16,7 @@ function App() {
       <BrowserRouter>
         <Layout>
           <Routes>
-            <Route path="/" element={<Home />} />
+            <Route path="/" element={<Navigate to="/characters" replace />} />
             <Route path="/help" element={<Help />} />
             <Route path="/characters" element={<Characters />} />
             <Route path="/character/:characterId" element={<CharacterPage />} />

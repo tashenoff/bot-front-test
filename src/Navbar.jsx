@@ -17,6 +17,8 @@ const Navbar = () => {
     { to: '/help', label: t('help'), icon: <FaQuestionCircle /> }
   ];
 
+  const mobileMenuItems = menuItems.filter(item => item.to !== '/');
+
   const languages = [
     { code: 'ru', name: t('russian'), flag: '🇷🇺' },
     { code: 'en', name: t('english'), flag: '🇺🇸' }
@@ -103,7 +105,7 @@ const Navbar = () => {
       {/* Мобильный навбар (нижний) */}
       <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-gray-950/80 backdrop-blur-lg border-t border-gray-800/50 z-50">
         <div className="flex justify-around items-center py-2">
-          {menuItems.map((item) => (
+          {mobileMenuItems.map((item) => (
             <Link
               key={item.to}
               to={item.to}
