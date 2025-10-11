@@ -65,55 +65,45 @@ const Subscription = () => {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white p-4">
-      <div className="max-w-6xl mx-auto">
-        <h1 className="text-4xl font-bold text-center mb-8 bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">
-          {language === 'en' ? '⭐ Premium Subscription' : '⭐ Премиум подписка'}
-        </h1>
-        <p className="text-center text-gray-400 mb-8">
-          {language === 'en' ? 'Get access to exclusive characters and features' : 'Получите доступ к эксклюзивным персонажам и функциям'}
-        </p>
-
-        {/* Картинка персонажа Chris */}
-        <div className="flex justify-center mb-8">
-          <img 
-            src="/images/stream.png" 
-            alt="Chris Pixel" 
-            className="w-32 h-32 md:w-40 md:h-40 rounded-full object-cover border-4 border-purple-500 shadow-lg"
+    <div className="min-h-[400px] bg-black text-white p-4">
+      <div className="max-w-md mx-auto py-8">
+        {/* Premium карточка */}
+        <div className="relative rounded-3xl overflow-hidden shadow-2xl" style={{ height: '680px' }}>
+          {/* Фоновое изображение */}
+          <div 
+            className="absolute inset-0 bg-cover bg-center"
+            style={{ 
+              backgroundImage: "url('/images/premium.jpeg')",
+              backgroundPosition: 'center 20%'
+            }}
           />
-        </div>
-
-        {/* Месячная подписка */}
-        <div className="grid grid-cols-1 gap-6 max-w-md mx-auto">
-          <div className="bg-gray-950 rounded-lg overflow-hidden shadow-lg hover:bg-gray-800 transition-colors relative">
-            <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 to-pink-500/20"></div>
-            <div className="relative p-6 text-center">
-              <div className="text-4xl mb-4">⭐</div>
-              <h3 className="text-2xl font-bold mb-2 text-white">
-                {language === 'en' ? 'Premium Month' : 'Премиум месяц'}
-              </h3>
-              <div className="flex items-center justify-center gap-4 mb-4">
-                <div className="text-4xl font-bold text-yellow-400">
-                  1 ⭐
+          
+          {/* Градиентный оверлей для лучшей читаемости */}
+          <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/60" />
+          
+          {/* Контент */}
+          <div className="relative h-full flex flex-col justify-center items-start p-8">
+            <div className="space-y-6 text-left">
+              {/* Заголовок и преимущества */}
+              <div className="space-y-4">
+                <h2 className="text-5xl font-bold text-white leading-tight whitespace-pre-line">
+                  {language === 'en' ? 'Premium\nMonth' : 'Премиум\nмесяц'}
+                </h2>
+                
+                <div className="space-y-2 text-white text-base">
+                  <p>{language === 'en' ? 'Exclusive characters' : 'Эксклюзивные персонажи'}</p>
+                  <p>{language === 'en' ? 'Unlimited messaging' : 'Безлимитное общение'}</p>
+                  <p>{language === 'en' ? 'Priority generation' : 'Приоритетная генерация'}</p>
+                  <p>{language === 'en' ? 'Exclusive content' : 'Эксклюзивный контент'}</p>
                 </div>
-                <div className="text-2xl text-gray-400 line-through opacity-75">
-                  199 ⭐
-                </div>
               </div>
-              <div className="inline-block bg-red-600 text-white text-xs font-bold px-3 py-1 rounded-full mb-4">
-                🔥 {language === 'en' ? 'SPECIAL OFFER' : 'СПЕЦИАЛЬНАЯ АКЦИЯ'}
-              </div>
-              <div className="text-gray-300 text-sm mb-6 space-y-2">
-                <p>🎮 {language === 'en' ? 'Exclusive characters' : 'Эксклюзивные персонажи'}</p>
-                <p>💬 {language === 'en' ? 'Unlimited messaging' : 'Безлимитное общение'}</p>
-                <p>🎨 {language === 'en' ? 'Priority generation' : 'Приоритетная генерация'}</p>
-                <p>🔥 {language === 'en' ? 'Exclusive content' : 'Эксклюзивный контент'}</p>
-              </div>
-              <button 
-                className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-bold py-3 px-4 rounded-lg transition-all transform hover:scale-105"
+              
+              {/* Кнопка подписки */}
+              <button
+                className="bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white font-semibold py-4 px-10 rounded-2xl transition-all transform hover:scale-105 shadow-lg shadow-purple-500/50 text-base"
                 onClick={() => handleSubscriptionSelect('monthly')}
               >
-                {language === 'en' ? '⭐ Subscribe Now' : '⭐ Подписаться сейчас'}
+                {language === 'en' ? 'Subscribe now' : 'Подписаться сейчас'}
               </button>
             </div>
           </div>
