@@ -81,7 +81,7 @@ const CharacterCard = ({ character }) => {
           
           <button
             onClick={handleChat}
-            className="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded transition duration-300"
+            className="w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold text-sm py-1.5 px-4 rounded transition duration-300"
           >
             {t('startChat')}
           </button>
