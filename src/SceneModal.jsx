@@ -6,6 +6,7 @@ import { useTranslation } from './hooks/useTranslation';
 const SceneModal = ({ character, isOpen, onClose }) => {
   const { t, language } = useTranslation();
   const [availableScenes, setAvailableScenes] = useState([]);
+  const [loadedImages, setLoadedImages] = useState({});
   const botUsername = import.meta.env.VITE_BOT_USERNAME;
 
   // Функции для получения локализованных данных
@@ -56,10 +57,10 @@ const SceneModal = ({ character, isOpen, onClose }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-gray-900 rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+      <div className="bg-gray-900/90 backdrop-blur-md rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto border border-gray-800/50">
         {/* Header */}
-        <div className="sticky top-0 bg-gray-900 border-b border-gray-700 p-6 flex justify-between items-center">
+        <div className="sticky top-0 bg-gray-900/95 backdrop-blur-sm border-b border-gray-700 p-6 flex justify-between items-center">
           <div>
             <h2 className="text-2xl font-bold text-purple-400">
               {language === 'en' ? 'Choose a scene' : 'Выберите сцену'}
@@ -93,11 +94,17 @@ const SceneModal = ({ character, isOpen, onClose }) => {
                       className="bg-gray-950 rounded-lg overflow-hidden shadow-lg hover:shadow-purple-500/20 transition-all duration-300 cursor-pointer transform hover:scale-105"
                       onClick={() => handleSceneSelect(scene)}
                     >
-                      <div className="relative">
+                      <div className="relative h-32">
+                        {!loadedImages[scene.id] && (
+                          <div className="absolute inset-0 flex items-center justify-center bg-gray-950">
+                            <div className="w-8 h-8 border-2 border-purple-600 border-t-transparent rounded-full animate-spin"></div>
+                          </div>
+                        )}
                         <img
                           src={scene.image}
                           alt={sceneName}
-                          className="w-full h-32 object-cover"
+                          className={`w-full h-32 object-cover transition-opacity duration-300 ${loadedImages[scene.id] ? 'opacity-100' : 'opacity-0'}`}
+                          onLoad={() => setLoadedImages(prev => ({ ...prev, [scene.id]: true }))}
                         />
                         <div className="absolute inset-0 flex items-center justify-center bg-black/10 opacity-0 hover:opacity-100 transition-opacity">
                           <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
