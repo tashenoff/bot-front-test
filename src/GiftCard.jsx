@@ -6,13 +6,25 @@ const GiftCard = ({ gift, showBuyButton = false, onSelect }) => {
 
   // Функции для получения локализованных данных
   const getGiftName = () => {
-    if (typeof gift.name === 'object') {
-      return gift.name[language] || gift.name.ru;
+    if (typeof gift.name === 'string' && gift.name.startsWith('🍷')) {
+      // Локальные данные (эмочи + текст)
+      const emoji = gift.name.split(' ')[0];
+      const names = {
+        'en': gift.name.replace('🍷', '🍷').replace('Бутылка дорогого вина', 'Bottle of expensive wine'),
+        'ru': gift.name
+      };
+      return names[language] || gift.name;
     }
+    // Данные из API (просто строка)
     return gift.name;
   };
 
   const getGiftDescription = () => {
+    if (typeof gift.effect_description === 'string') {
+      // Локальные данные могут быть объектами, но API всегда строки
+      return gift.effect_description;
+    }
+    // Fallback для старого формата
     if (typeof gift.effect_description === 'object') {
       return gift.effect_description[language] || gift.effect_description.ru;
     }

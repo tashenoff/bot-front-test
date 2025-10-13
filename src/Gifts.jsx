@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import GiftCard from './GiftCard';
 import { useTranslation } from './hooks/useTranslation';
-import giftsData from './data/gifts';
 
 const Gifts = () => {
   const { language } = useTranslation();
   const [gifts, setGifts] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [chatId, setChatId] = useState(null);
 
   useEffect(() => {
@@ -22,29 +23,81 @@ const Gifts = () => {
     const chat = params.get('chat_id');
     setChatId(chat);
 
-    // Загружаем подарки из локальных данных
-    setGifts(giftsData);
+    // Загружаем подарки из API
+    loadGifts();
   }, []);
 
-  const handleGiftSelect = (giftId) => {
+  const loadGifts = async () => {
+    try {
+      setIsLoading(true);
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8001';
+      const response = await fetch(`${apiUrl}/gifts`);
+
+      if (!response.ok) {
+        throw new Error('Не удалось загрузить подарки');
+      }
+
+      const giftsData = await response.json();
+      setGifts(giftsData);
+      setError(null);
+    } catch (err) {
+      console.error('Error loading gifts:', err);
+      setError(err.message);
+
+      // Fallback к локальным данным при ошибке API
+      try {
+        const giftsData = (await import('./data/gifts')).default;
+        setGifts(giftsData);
+      } catch (fallbackErr) {
+        console.error('Fallback error:', fallbackErr);
+        setGifts([]);
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleGiftSelect = async (giftId) => {
     if (window.Telegram?.WebApp) {
       try {
         const tg = window.Telegram.WebApp;
-        const botUsername = import.meta.env.VITE_BOT_USERNAME || 'your_bot';
-        
-        // Создаем deep link для возврата в бота с информацией о подарке
-        const deepLink = `https://t.me/${botUsername}?start=gift_${giftId}_chat_${chatId}`;
-        
-        // Открываем deep link
-        tg.openTelegramLink(deepLink);
-        
-        // Закрываем webapp
-        setTimeout(() => {
-          tg.close();
-        }, 100);
-        
+
+        // Получаем данные инвойса из API
+        const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8001';
+        const response = await fetch(`${apiUrl}/gifts/${giftId}/invoice?chat_id=${chatId}`);
+
+        if (!response.ok) {
+          throw new Error('Не удалось получить данные инвойса');
+        }
+
+        const invoiceData = await response.json();
+
+        // Проверяем на ошибки
+        if (invoiceData.error) {
+          throw new Error(invoiceData.error);
+        }
+
+        console.log('Invoice data:', invoiceData);
+
+        // Открываем оплату через WebApp
+        tg.openInvoice(invoiceData, (status) => {
+          console.log('Payment status:', status);
+
+          if (status === 'paid') {
+            // Оплата успешна
+            alert(language === 'en' ? 'Payment successful!' : 'Оплата прошла успешно!');
+            tg.close();
+          } else if (status === 'cancelled') {
+            // Оплата отменена
+            alert(language === 'en' ? 'Payment cancelled' : 'Оплата отменена');
+          } else {
+            // Другие статусы
+            alert(language === 'en' ? `Payment status: ${status}` : `Статус оплаты: ${status}`);
+          }
+        });
+
       } catch (error) {
-        console.error('Error selecting gift:', error);
+        console.error('Error purchasing gift:', error);
         alert(language === 'en' ? `Error: ${error.message}` : `Ошибка: ${error.message}`);
       }
     } else {
