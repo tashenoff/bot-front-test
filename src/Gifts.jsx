@@ -8,12 +8,6 @@ const Gifts = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [chatId, setChatId] = useState(null);
-  const [debugLogs, setDebugLogs] = useState([]);
-  
-  const addLog = (message) => {
-    const timestamp = new Date().toLocaleTimeString();
-    setDebugLogs(prev => [...prev.slice(-4), `${timestamp}: ${message}`]);
-  };
 
   useEffect(() => {
     // Инициализация Telegram WebApp
@@ -64,49 +58,49 @@ const Gifts = () => {
   };
 
   const handleGiftSelect = async (giftId) => {
-    addLog(`🎁 Выбран подарок: ${giftId}, chatId: ${chatId}`);
-    
     if (window.Telegram?.WebApp) {
       try {
         const tg = window.Telegram.WebApp;
-        addLog('✅ Telegram WebApp доступен');
 
-        // Получаем данные подарка из API
+        // Получаем данные инвойса из API
         const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8001';
-        addLog(`📡 Запрос к API: ${apiUrl}/gifts/${giftId}/invoice?chat_id=${chatId}`);
-        
         const response = await fetch(`${apiUrl}/gifts/${giftId}/invoice?chat_id=${chatId}`);
 
         if (!response.ok) {
-          addLog(`❌ API ошибка: ${response.status} ${response.statusText}`);
-          throw new Error('Не удалось получить данные подарка');
+          throw new Error('Не удалось получить данные инвойса');
         }
 
-        const giftData = await response.json();
-        addLog(`✅ Данные получены: ${JSON.stringify(giftData)}`);
+        const invoiceData = await response.json();
 
-        // ПРАВИЛЬНЫЙ способ: сохраняем данные и показываем MainButton
-        window.giftDataToSend = JSON.stringify(giftData);
-        
-        // Настраиваем MainButton
-        tg.MainButton.setText('💳 Купить подарок');
-        tg.MainButton.show();
-        tg.MainButton.enable();
-        
-        // Обработчик для MainButton
-        tg.MainButton.onClick(() => {
-          addLog('📤 MainButton нажат, отправляю данные...');
-          tg.sendData(window.giftDataToSend);
+        // Проверяем на ошибки
+        if (invoiceData.error) {
+          throw new Error(invoiceData.error);
+        }
+
+        console.log('Invoice data:', invoiceData);
+
+        // Открываем оплату через WebApp
+        tg.openInvoice(invoiceData, (status) => {
+          console.log('Payment status:', status);
+
+          if (status === 'paid') {
+            // Оплата успешна
+            alert(language === 'en' ? 'Payment successful!' : 'Оплата прошла успешно!');
+            tg.close();
+          } else if (status === 'cancelled') {
+            // Оплата отменена
+            alert(language === 'en' ? 'Payment cancelled' : 'Оплата отменена');
+          } else {
+            // Другие статусы
+            alert(language === 'en' ? `Payment status: ${status}` : `Статус оплаты: ${status}`);
+          }
         });
-        
-        addLog('✅ MainButton показан. Нажми "Купить подарок" для отправки данных боту.');
-        
+
       } catch (error) {
-        addLog(`❌ Ошибка: ${error.message}`);
+        console.error('Error purchasing gift:', error);
         alert(language === 'en' ? `Error: ${error.message}` : `Ошибка: ${error.message}`);
       }
     } else {
-      addLog('❌ Telegram WebApp недоступен');
       alert(language === 'en' ? 'Telegram WebApp not available' : 'Telegram WebApp не доступен');
     }
   };
@@ -121,20 +115,6 @@ const Gifts = () => {
           {language === 'en' ? 'Choose a gift to delight the character' : 'Выберите подарок, чтобы порадовать персонажа'}
         </p>
         
-        {/* Debug панель - показываем только если есть логи */}
-        {debugLogs.length > 0 && (
-          <div className="mb-8 p-4 bg-gray-900 rounded-lg border border-gray-700">
-            <h3 className="text-lg font-semibold mb-3 text-green-400">🔍 Debug логи:</h3>
-            <div className="space-y-1 text-sm font-mono">
-              {debugLogs.map((log, index) => (
-                <div key={index} className="text-gray-300 bg-gray-800 px-3 py-1 rounded">
-                  {log}
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {gifts.map(gift => (
             <GiftCard 
