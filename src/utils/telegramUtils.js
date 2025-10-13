@@ -80,3 +80,53 @@ export const sendDataToBot = (data) => {
     alert('Произошла ошибка при отправке данных');
   }
 };
+
+/**
+ * Создает диплинк для открытия профиля пользователя
+ * @param {number} userId - ID пользователя
+ * @param {string} botUsername - Имя пользователя бота
+ * @returns {string} Диплинк для Telegram
+ */
+export const createProfileDeepLink = (userId, botUsername) => {
+  if (!userId || !botUsername) {
+    console.error('Недостаточно данных для создания диплинка профиля');
+    return null;
+  }
+
+  return `https://t.me/${botUsername}?start=profile_${userId}`;
+};
+
+/**
+ * Получает ID пользователя из Telegram WebApp или URL параметров
+ * @returns {number|null} ID пользователя или null если не найден
+ */
+export const extractUserIdFromTelegram = () => {
+  // Проверяем доступность Telegram WebApp API
+  if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe) {
+    const user = window.Telegram.WebApp.initDataUnsafe.user;
+    if (user && user.id) {
+      return user.id;
+    }
+  }
+  
+  // Фоллбэк для разработки - извлечение из URL параметров
+  const urlParams = new URLSearchParams(window.location.search);
+  const userIdParam = urlParams.get('user_id');
+  if (userIdParam && !isNaN(parseInt(userIdParam))) {
+    return parseInt(userIdParam);
+  }
+  
+  return null;
+};
+
+/**
+ * Открывает диплинк профиля в Telegram
+ * @param {number} userId - ID пользователя  
+ * @param {string} botUsername - Имя пользователя бота
+ */
+export const openProfileInTelegram = (userId, botUsername) => {
+  const deepLink = createProfileDeepLink(userId, botUsername);
+  if (deepLink) {
+    openTelegramLink(deepLink);
+  }
+};

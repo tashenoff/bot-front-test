@@ -7,6 +7,7 @@ import SceneSelection from './SceneSelection';
 import CharacterPage from './CharacterPage';
 import Gifts from './Gifts';
 import Subscription from './Subscription';
+import Profile from './Profile';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { LanguageProvider } from './contexts/LanguageContext';
 
@@ -23,6 +24,7 @@ function App() {
             <Route path="/character/:characterId/scenes" element={<SceneSelection />} />
             <Route path="/gifts" element={<Gifts />} />
             <Route path="/subscription" element={<Subscription />} />
+            <Route path="/profile" element={<Profile />} />
           </Routes>
         </Layout>
       </BrowserRouter>
