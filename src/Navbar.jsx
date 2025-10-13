@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { FaHome, FaUsers, FaQuestionCircle, FaGlobe, FaChevronDown, FaStar } from 'react-icons/fa';
+import { FaHome, FaUsers, FaQuestionCircle, FaGlobe, FaChevronDown, FaStar, FaUser } from 'react-icons/fa';
 import { useTranslation } from './hooks/useTranslation';
 import { useLanguage } from './contexts/LanguageContext';
 
@@ -13,6 +13,7 @@ const Navbar = () => {
   const menuItems = [
     { to: '/', label: t('home'), icon: <FaHome /> },
     { to: '/characters', label: t('characters'), icon: <FaUsers /> },
+    { to: '/profile', label: t('profile') || 'Профиль', icon: <FaUser /> },
     { to: '/subscription', label: t('premium'), icon: <FaStar />, premium: true },
     { to: '/help', label: t('help'), icon: <FaQuestionCircle /> }
   ];

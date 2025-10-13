@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from './hooks/useTranslation';
+import { extractUserIdFromTelegram } from './utils/telegramUtils';
 
 const Profile = () => {
   const { t } = useTranslation();
@@ -10,37 +11,17 @@ const Profile = () => {
 
   // Извлекаем user_id из Telegram WebApp
   useEffect(() => {
-    const extractUserId = () => {
-      // Проверяем доступность Telegram WebApp API
-      if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe) {
-        const user = window.Telegram.WebApp.initDataUnsafe.user;
-        if (user && user.id) {
-          setUserId(user.id);
-          return user.id;
-        }
-      }
-      
-      // Фоллбэк для разработки - извлечение из URL параметров
-      const urlParams = new URLSearchParams(window.location.search);
-      const userIdParam = urlParams.get('user_id');
-      if (userIdParam) {
-        const id = parseInt(userIdParam);
-        setUserId(id);
-        return id;
-      }
-      
-      // Если не удалось извлечь, используем тестовый ID
-      console.warn('Не удалось извлечь user_id, используется тестовый ID');
-      setUserId(123456789);
-      return 123456789;
-    };
-
-    const id = extractUserId();
+    const id = extractUserIdFromTelegram();
+    
     if (id) {
+      setUserId(id);
       fetchUserProfile(id);
     } else {
-      setError('Не удалось определить пользователя');
-      setLoading(false);
+      // Используем тестовый ID для разработки
+      console.warn('Не удалось извлечь user_id, используется тестовый ID');
+      const testId = 123456789;
+      setUserId(testId);
+      fetchUserProfile(testId);
     }
   }, []);
 
