@@ -85,13 +85,21 @@ const Gifts = () => {
         const giftData = await response.json();
         addLog(`✅ Данные получены: ${JSON.stringify(giftData)}`);
 
-        // Отправляем данные боту через WebApp
-        addLog(`📤 Отправляю данные боту...`);
-        tg.sendData(JSON.stringify(giftData));
+        // ПРАВИЛЬНЫЙ способ: сохраняем данные и показываем MainButton
+        window.giftDataToSend = JSON.stringify(giftData);
         
-        addLog('✅ Данные отправлены! WebApp должен закрыться автоматически.');
-
-        // НЕ закрываем WebApp вручную - Telegram сделает это автоматически после получения данных ботом
+        // Настраиваем MainButton
+        tg.MainButton.setText('💳 Купить подарок');
+        tg.MainButton.show();
+        tg.MainButton.enable();
+        
+        // Обработчик для MainButton
+        tg.MainButton.onClick(() => {
+          addLog('📤 MainButton нажат, отправляю данные...');
+          tg.sendData(window.giftDataToSend);
+        });
+        
+        addLog('✅ MainButton показан. Нажми "Купить подарок" для отправки данных боту.');
         
       } catch (error) {
         addLog(`❌ Ошибка: ${error.message}`);
