@@ -140,7 +140,7 @@ const Profile = () => {
             
             {userProfile.user_full_name && (
               <div className="flex justify-between items-center">
-                <span className="text-gray-300">Полное имя:</span>
+                <span className="text-gray-300">Имя в Telegram:</span>
                 <span className="text-white">{userProfile.user_full_name}</span>
               </div>
             )}
@@ -178,34 +178,15 @@ const Profile = () => {
               </div>
             )}
             
-            <div className="flex justify-between items-center">
-              <span className="text-gray-300">Дата покупки:</span>
-              <span className="text-white">{formatDate(userProfile.subscription.created_at)}</span>
-            </div>
+            {userProfile.subscription.is_premium && (
+              <div className="flex justify-between items-center">
+                <span className="text-gray-300">Дата покупки:</span>
+                <span className="text-white">{formatDate(userProfile.subscription.created_at)}</span>
+              </div>
+            )}
           </div>
         </div>
 
-        {/* Баланс и лимиты */}
-        <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 mb-6">
-          <h2 className="text-xl font-bold text-white mb-4">Баланс и лимиты</h2>
-          
-          <div className="space-y-3">
-            <div className="flex justify-between items-center">
-              <span className="text-gray-300">Баланс звезд:</span>
-              <span className="text-yellow-400 font-bold">⭐ {userProfile.stars_balance}</span>
-            </div>
-            
-            <div className="flex justify-between items-center">
-              <span className="text-gray-300">Использовано изображений сегодня:</span>
-              <span className="text-white">{userProfile.free_images_today}</span>
-            </div>
-            
-            <div className="flex justify-between items-center">
-              <span className="text-gray-300">Бонусных изображений доступно:</span>
-              <span className="text-green-400 font-bold">{userProfile.bonus_images_today}</span>
-            </div>
-          </div>
-        </div>
 
         {/* Кнопка обновления */}
         <div className="text-center">
