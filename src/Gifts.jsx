@@ -62,42 +62,26 @@ const Gifts = () => {
       try {
         const tg = window.Telegram.WebApp;
 
-        // Получаем данные инвойса из API
+        // Получаем данные подарка из API
         const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8001';
         const response = await fetch(`${apiUrl}/gifts/${giftId}/invoice?chat_id=${chatId}`);
 
         if (!response.ok) {
-          throw new Error('Не удалось получить данные инвойса');
+          throw new Error('Не удалось получить данные подарка');
         }
 
-        const invoiceData = await response.json();
+        const giftData = await response.json();
 
-        // Проверяем на ошибки
-        if (invoiceData.error) {
-          throw new Error(invoiceData.error);
-        }
+        console.log('Gift data:', giftData);
 
-        console.log('Invoice data:', invoiceData);
+        // Отправляем данные боту через WebApp
+        tg.sendData(JSON.stringify(giftData));
 
-        // Открываем оплату через WebApp
-        tg.openInvoice(invoiceData, (status) => {
-          console.log('Payment status:', status);
-
-          if (status === 'paid') {
-            // Оплата успешна
-            alert(language === 'en' ? 'Payment successful!' : 'Оплата прошла успешно!');
-            tg.close();
-          } else if (status === 'cancelled') {
-            // Оплата отменена
-            alert(language === 'en' ? 'Payment cancelled' : 'Оплата отменена');
-          } else {
-            // Другие статусы
-            alert(language === 'en' ? `Payment status: ${status}` : `Статус оплаты: ${status}`);
-          }
-        });
+        // Закрываем WebApp
+        tg.close();
 
       } catch (error) {
-        console.error('Error purchasing gift:', error);
+        console.error('Error selecting gift:', error);
         alert(language === 'en' ? `Error: ${error.message}` : `Ошибка: ${error.message}`);
       }
     } else {
