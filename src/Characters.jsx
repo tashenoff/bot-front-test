@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import { debounce } from 'lodash';
 import CharacterCard from './CharacterCard';
 import { useTranslation } from './hooks/useTranslation';
 
@@ -11,6 +12,12 @@ const Characters = () => {
   const [loading, setLoading] = useState(true);
   const observer = useRef(null);
   const sentinelRef = useRef(null);
+
+  // Debounced search
+  const debouncedSearch = useCallback(
+    debounce((value) => setSearchTerm(value), 300),
+    []
+  );
 
   // Функция для получения локализованного имени
   const getCharacterName = (character) => {
@@ -54,12 +61,14 @@ const Characters = () => {
     fetchCharacters();
   }, []);
 
-  const filteredCharacters = characters.filter(character => character.enabled).filter(character => {
-    const name = getCharacterName(character);
-    const description = getCharacterDescription(character);
-    return name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-           description.toLowerCase().includes(searchTerm.toLowerCase());
-  });
+  const filteredCharacters = useMemo(() => {
+    return characters.filter(character => character.enabled).filter(character => {
+      const name = getCharacterName(character);
+      const description = getCharacterDescription(character);
+      return name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+             description.toLowerCase().includes(searchTerm.toLowerCase());
+    });
+  }, [characters, searchTerm, language]);
 
   const loadMore = useCallback(() => {
     setVisibleCount(prev => prev + 4);
@@ -74,7 +83,7 @@ const Characters = () => {
       if (entries[0].isIntersecting && visibleCount < filteredCharacters.length) {
         loadMore();
       }
-    });
+    }, { threshold: 0.1, rootMargin: '100px' });
 
     if (sentinelRef.current) {
       observer.current.observe(sentinelRef.current);
@@ -82,10 +91,10 @@ const Characters = () => {
 
     return () => {
       if (observer.current) {
-      observer.current.disconnect();
-    }
-  };
-}, [filteredCharacters.length, visibleCount, loadMore]);
+        observer.current.disconnect();
+      }
+    };
+  }, [filteredCharacters.length, visibleCount, loadMore]);
 
   useEffect(() => {
     setVisibleCount(6);
@@ -129,8 +138,8 @@ const Characters = () => {
           <input
             type="text"
             placeholder={t('searchPlaceholder')}
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            defaultValue={searchTerm}
+            onChange={(e) => debouncedSearch(e.target.value)}
             className="w-full pl-10 pr-4 py-2 rounded-lg bg-gray-900 text-white border border-gray-700 focus:outline-none focus:border-purple-500"
           />
         </div>
