@@ -20,26 +20,22 @@ const Gifts = () => {
       tg.expand();
       tg.MainButton.hide();
       
-      // Получаем chat_id из Telegram WebApp API
-      const webAppUser = tg.initDataUnsafe?.user;
-      const webAppChat = tg.initDataUnsafe?.chat;
+      // Сначала проверяем URL параметры (приоритет для WebApp)
+      const params = new URLSearchParams(window.location.search);
+      const urlChatId = params.get('chat_id');
       
-      console.log('Telegram WebApp initData:', tg.initDataUnsafe);
-      
-      if (webAppChat) {
-        // Если это групповой чат, используем chat.id
-        setChatId(webAppChat.id);
-        console.log('Using chat ID:', webAppChat.id);
-      } else if (webAppUser) {
-        // Если это личный чат, используем user.id
-        setChatId(webAppUser.id);
-        console.log('Using user ID as chat ID:', webAppUser.id);
+      if (urlChatId) {
+        setChatId(parseInt(urlChatId));
       } else {
-        // Fallback: пытаемся получить из URL параметров
-        const params = new URLSearchParams(window.location.search);
-        const chat = params.get('chat_id');
-        setChatId(chat);
-        console.log('Fallback: using chat_id from URL:', chat);
+        // Fallback: получаем из Telegram WebApp API
+        const webAppUser = tg.initDataUnsafe?.user;
+        const webAppChat = tg.initDataUnsafe?.chat;
+        
+        if (webAppChat) {
+          setChatId(webAppChat.id);
+        } else if (webAppUser) {
+          setChatId(webAppUser.id);
+        }
       }
     }
 
