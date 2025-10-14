@@ -146,7 +146,7 @@ const CharacterPage = () => {
             <img 
               src={getImageUrl(character.image)} 
               alt={character.name}
-              className="w-full max-w-md h-64 md:h-80 object-cover rounded-lg mx-auto shadow-lg"
+              className="w-full max-w-md object-contain rounded-lg mx-auto shadow-lg"
             />
             <h1 className="text-3xl font-bold mt-4 text-purple-400 text-center">{character.name}</h1>
           </div>
