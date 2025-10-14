@@ -55,7 +55,7 @@ const Navbar = () => {
   const loadUserData = async (user_id) => {
     try {
       const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8001';
-      const response = await fetch(`${apiUrl}/users/${user_id}/profile`);
+      const response = await fetch(`${apiUrl}/user/${user_id}/profile`);
       
       if (response.ok) {
         const userData = await response.json();
