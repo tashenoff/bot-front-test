@@ -102,49 +102,113 @@ const CharacterPage = () => {
     handleSceneSelection(character, scene, botUsername);
   };
 
-  // Всегда показываем отладочную информацию
+  // Функция для извлечения интересов из текста
+  const getInterests = (character) => {
+    if (!character?.prompt_parts?.interests) return [];
+    
+    const interestsText = character.prompt_parts.interests;
+    const interestsMatch = interestsText.match(/Тебя интересует: (.+?)(?:\.|$)/);
+    
+    if (interestsMatch) {
+      return interestsMatch[1].split(', ').map(interest => interest.trim());
+    }
+    
+    return [];
+  };
+
   return (
-    <div className="min-h-screen bg-black text-white p-4">
-      <h1 className="text-2xl mb-4">DEBUG: Character Page</h1>
-      
-      <div className="bg-gray-800 p-4 rounded mb-4">
-        <div>Character ID: {characterId}</div>
-        <div>Loading: {loading ? 'ДА' : 'НЕТ'}</div>
-        <div>Character: {character ? character.name : 'НЕТ'}</div>
-        <div>Scenes: {availableScenes.length}</div>
+    <div className="min-h-screen bg-black text-white">
+      {/* Debug info */}
+      <div className="bg-gray-800 p-4 text-sm">
+        <div>Character ID: {characterId} | Loading: {loading ? 'ДА' : 'НЕТ'}</div>
         {error && <div className="text-red-400">Error: {error}</div>}
         <div className="text-yellow-400">Debug: {debugInfo}</div>
       </div>
 
-      {loading && <div>Загрузка...</div>}
-      
-      {!loading && !character && <div>Персонаж не найден</div>}
-      
-      {!loading && character && (
-        <div>
-          <h2 className="text-xl mb-4">Персонаж: {character.name}</h2>
-          
-          {availableScenes.length > 0 ? (
-            <div>
-              <h3 className="mb-2">Доступные сцены ({availableScenes.length}):</h3>
-              {availableScenes.map(scene => (
-                <div key={scene.id} className="bg-gray-900 p-2 mb-2 rounded">
-                  {getSceneName(scene)}
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div>Нет доступных сцен</div>
-          )}
+      {loading && (
+        <div className="flex items-center justify-center min-h-64">
+          <div>Загрузка...</div>
         </div>
       )}
       
-      <button 
-        onClick={handleBack}
-        className="mt-4 bg-purple-600 px-4 py-2 rounded"
-      >
-        Назад к персонажам
-      </button>
+      {!loading && !character && (
+        <div className="flex items-center justify-center min-h-64">
+          <div>Персонаж не найден</div>
+        </div>
+      )}
+      
+      {!loading && character && (
+        <div className="container mx-auto px-4 py-6">
+          {/* Фото персонажа */}
+          <div className="mb-8 text-center">
+            <img 
+              src={character.image} 
+              alt={character.name}
+              className="w-64 h-64 object-cover rounded-lg mx-auto shadow-lg"
+            />
+            <h1 className="text-3xl font-bold mt-4 text-purple-400">{character.name}</h1>
+          </div>
+
+          {/* О персонаже */}
+          <div className="mb-8">
+            <h2 className="text-2xl font-bold mb-4 text-purple-400">О персонаже</h2>
+            <div className="bg-gray-900 p-6 rounded-lg">
+              <p className="text-gray-300 leading-relaxed">{character.description}</p>
+            </div>
+          </div>
+
+          {/* Интересы */}
+          {getInterests(character).length > 0 && (
+            <div className="mb-8">
+              <h2 className="text-2xl font-bold mb-4 text-purple-400">Интересы</h2>
+              <div className="grid grid-cols-2 gap-3">
+                {getInterests(character).map((interest, index) => (
+                  <div key={index} className="bg-gray-800 p-3 rounded-lg text-center">
+                    <span className="text-sm text-gray-300">{interest}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Доступные сцены */}
+          <div className="mb-8">
+            <h2 className="text-2xl font-bold mb-4 text-purple-400">
+              Доступные сцены ({availableScenes.length})
+            </h2>
+            {availableScenes.length > 0 ? (
+              <div className="grid grid-cols-1 gap-4">
+                {availableScenes.map(scene => (
+                  <div 
+                    key={scene.id} 
+                    className="bg-gray-900 p-4 rounded-lg cursor-pointer hover:bg-gray-800 transition-colors"
+                    onClick={() => handleSceneSelect(scene)}
+                  >
+                    <h3 className="font-bold text-lg mb-2">{getSceneName(scene)}</h3>
+                    {getSceneIntroText(scene) && (
+                      <p className="text-gray-400 text-sm line-clamp-2">{getSceneIntroText(scene)}</p>
+                    )}
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="bg-gray-900 p-6 rounded-lg text-center">
+                <p className="text-gray-400">Нет доступных сцен</p>
+              </div>
+            )}
+          </div>
+
+          {/* Кнопка назад */}
+          <div className="text-center">
+            <button 
+              onClick={handleBack}
+              className="bg-purple-600 hover:bg-purple-700 px-6 py-3 rounded-lg transition-colors"
+            >
+              Назад к персонажам
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
