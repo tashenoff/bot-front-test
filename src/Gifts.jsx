@@ -62,46 +62,86 @@ const Gifts = () => {
       try {
         const tg = window.Telegram.WebApp;
 
-        // Получаем данные инвойса из API
+        // Проверяем, что у нас есть chat_id
+        if (!chatId) {
+          throw new Error('Chat ID not available');
+        }
+
+        console.log('Creating invoice for gift:', giftId, 'chat:', chatId);
+
+        // Получаем ссылку на инвойс из API
         const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8001';
         const response = await fetch(`${apiUrl}/gifts/${giftId}/invoice?chat_id=${chatId}`);
 
         if (!response.ok) {
-          throw new Error('Не удалось получить данные инвойса');
+          throw new Error('Не удалось создать инвойс');
         }
 
         const invoiceData = await response.json();
+        console.log('Invoice data:', invoiceData);
 
         // Проверяем на ошибки
         if (invoiceData.error) {
           throw new Error(invoiceData.error);
         }
 
-        console.log('Invoice data:', invoiceData);
+        // Получаем ссылку на инвойс
+        const invoiceLink = invoiceData.invoice_link;
+        if (!invoiceLink) {
+          throw new Error('Не удалось получить ссылку на инвойс');
+        }
 
-        // Открываем оплату через WebApp
-        tg.openInvoice(invoiceData, (status) => {
+        console.log('Opening invoice:', invoiceLink);
+
+        // Открываем инвойс через Telegram WebApp
+        tg.openInvoice(invoiceLink, (status) => {
           console.log('Payment status:', status);
 
           if (status === 'paid') {
-            // Оплата успешна
-            alert(language === 'en' ? 'Payment successful!' : 'Оплата прошла успешно!');
-            tg.close();
+            // Оплата успешна - показываем поздравление
+            const successMessage = language === 'en' ? 
+              `🎉 Payment successful! Gift "${invoiceData.gift_name}" purchased!` :
+              `🎉 Оплата прошла успешно! Подарок "${invoiceData.gift_name}" куплен!`;
+            
+            // Показываем уведомление через Telegram
+            tg.showAlert(successMessage);
+            
+            // Закрываем WebApp через некоторое время
+            setTimeout(() => {
+              tg.close();
+            }, 2000);
+            
           } else if (status === 'cancelled') {
             // Оплата отменена
-            alert(language === 'en' ? 'Payment cancelled' : 'Оплата отменена');
+            const cancelMessage = language === 'en' ? 'Payment cancelled' : 'Оплата отменена';
+            tg.showAlert(cancelMessage);
+          } else if (status === 'failed') {
+            // Оплата неуспешна
+            const failMessage = language === 'en' ? 'Payment failed' : 'Ошибка оплаты';
+            tg.showAlert(failMessage);
           } else {
             // Другие статусы
-            alert(language === 'en' ? `Payment status: ${status}` : `Статус оплаты: ${status}`);
+            console.log('Unknown payment status:', status);
           }
         });
 
       } catch (error) {
         console.error('Error purchasing gift:', error);
-        alert(language === 'en' ? `Error: ${error.message}` : `Ошибка: ${error.message}`);
+        const errorMessage = language === 'en' ? 
+          `Error: ${error.message}` : 
+          `Ошибка: ${error.message}`;
+        
+        if (window.Telegram?.WebApp) {
+          window.Telegram.WebApp.showAlert(errorMessage);
+        } else {
+          alert(errorMessage);
+        }
       }
     } else {
-      alert(language === 'en' ? 'Telegram WebApp not available' : 'Telegram WebApp не доступен');
+      const noWebAppMessage = language === 'en' ? 
+        'Telegram WebApp not available' : 
+        'Telegram WebApp не доступен';
+      alert(noWebAppMessage);
     }
   };
 
