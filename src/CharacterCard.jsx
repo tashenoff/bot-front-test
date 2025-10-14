@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, memo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import SceneModal from './SceneModal';
+import LazyImage from './components/LazyImage';
 import { useTranslation } from './hooks/useTranslation';
 
-const CharacterCard = ({ character }) => {
-  const { t, language } = useTranslation();
+const CharacterCard = memo(({ character, getCharacterName, getCharacterDescription }) => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [imageLoaded, setImageLoaded] = useState(false);
 
   // Функция для получения полного URL изображения
   const getImageUrl = (imagePath) => {
@@ -25,54 +25,30 @@ const CharacterCard = ({ character }) => {
 
   const handleAboutCharacter = (e) => {
     e.preventDefault();
-    // Переходим на страницу о персонаже
     navigate(`/character/${character.id}`);
   };
 
-  // Получаем локализованное имя и описание
-  const getName = () => {
-    if (typeof character.name === 'object') {
-      return character.name[language] || character.name.ru;
-    }
-    return character.name;
-  };
-
-  const getDescription = () => {
-    // Сначала пытаемся получить short_description
-    const shortDesc = character.short_description;
-    if (shortDesc) {
-      if (typeof shortDesc === 'object') {
-        return shortDesc[language] || shortDesc.ru;
-      }
-      return shortDesc;
-    }
-    // Если short_description нет, используем description
-    if (typeof character.description === 'object') {
-      return character.description[language] || character.description.ru;
-    }
-    return character.description;
-  };
-
-  const name = getName();
-  const description = getDescription();
+  // Используем переданные мемоизированные функции
+  const name = getCharacterName ? getCharacterName(character) : character.name;
+  const description = getCharacterDescription ? getCharacterDescription(character) : character.description;
 
   return (
     <>
       <div className="bg-gray-950/60 backdrop-blur-md rounded-lg overflow-hidden shadow-lg border border-gray-800/50">
         <div className="w-full relative min-h-[300px]">
-          {!imageLoaded && (
-            <div className="absolute inset-0 flex items-center justify-center bg-gray-950/40">
-              <div className="animate-pulse flex flex-col items-center">
-                <div className="w-16 h-16 border-4 border-purple-600 border-t-transparent rounded-full animate-spin"></div>
-                <p className="text-gray-500 mt-4 text-sm">{t('loading') || 'Загрузка...'}</p>
+          <LazyImage
+            src={getImageUrl(character.image)}
+            alt={name}
+            className="w-full h-full min-h-[300px] object-cover"
+            placeholder={
+              <div className="absolute inset-0 flex items-center justify-center bg-gray-950/40">
+                <div className="animate-pulse flex flex-col items-center">
+                  <div className="w-16 h-16 border-4 border-purple-600 border-t-transparent rounded-full animate-spin"></div>
+                  <p className="text-gray-500 mt-4 text-sm">{t('loading') || 'Загрузка...'}</p>
+                </div>
               </div>
-            </div>
-          )}
-          <img 
-            src={getImageUrl(character.image)} 
-            alt={name} 
-            className={`w-full h-full min-h-[300px] object-cover transition-opacity duration-300 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
-            onLoad={() => setImageLoaded(true)}
+            }
+            loadingClassName="w-full h-full min-h-[300px] relative bg-gray-950/40"
           />
           {character.premium_only && (
             <div className="absolute bottom-4 left-4">
@@ -114,6 +90,8 @@ const CharacterCard = ({ character }) => {
       />
     </>
   );
-};
+});
+
+CharacterCard.displayName = 'CharacterCard';
 
 export default CharacterCard;

@@ -1,10 +1,12 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import CharacterCard from './CharacterCard';
 import { useTranslation } from './hooks/useTranslation';
+import { debounce, preloadImages } from './utils/performanceUtils';
 
 const Characters = () => {
   const { t, language } = useTranslation();
   const [searchTerm, setSearchTerm] = useState('');
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
   const [visibleCount, setVisibleCount] = useState(6);
   const [showArrow, setShowArrow] = useState(false);
   const [characters, setCharacters] = useState([]);
@@ -12,21 +14,32 @@ const Characters = () => {
   const observer = useRef(null);
   const sentinelRef = useRef(null);
 
-  // Функция для получения локализованного имени
-  const getCharacterName = (character) => {
+  // Мемоизированные функции для получения локализованного контента
+  const getCharacterName = useCallback((character) => {
     if (typeof character.name === 'object') {
       return character.name[language] || character.name.ru;
     }
     return character.name;
-  };
+  }, [language]);
 
-  // Функция для получения локализованного описания
-  const getCharacterDescription = (character) => {
+  const getCharacterDescription = useCallback((character) => {
     if (typeof character.description === 'object') {
       return character.description[language] || character.description.ru;
     }
     return character.description;
-  };
+  }, [language]);
+
+  // Debounced поиск для улучшения производительности
+  const debouncedSearch = useCallback(
+    debounce((term) => {
+      setDebouncedSearchTerm(term);
+    }, 300),
+    []
+  );
+
+  useEffect(() => {
+    debouncedSearch(searchTerm);
+  }, [searchTerm, debouncedSearch]);
 
   // Загрузка персонажей из API
   const fetchCharacters = async () => {
@@ -54,12 +67,22 @@ const Characters = () => {
     fetchCharacters();
   }, []);
 
-  const filteredCharacters = characters.filter(character => character.enabled).filter(character => {
-    const name = getCharacterName(character);
-    const description = getCharacterDescription(character);
-    return name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-           description.toLowerCase().includes(searchTerm.toLowerCase());
-  });
+  // Мемоизированная фильтрация персонажей
+  const filteredCharacters = useMemo(() => {
+    const enabledCharacters = characters.filter(character => character.enabled);
+    
+    if (!debouncedSearchTerm.trim()) {
+      return enabledCharacters;
+    }
+
+    const searchLower = debouncedSearchTerm.toLowerCase();
+    return enabledCharacters.filter(character => {
+      const name = getCharacterName(character);
+      const description = getCharacterDescription(character);
+      return name.toLowerCase().includes(searchLower) ||
+             description.toLowerCase().includes(searchLower);
+    });
+  }, [characters, debouncedSearchTerm, getCharacterName, getCharacterDescription]);
 
   const loadMore = useCallback(() => {
     setVisibleCount(prev => prev + 4);
@@ -89,7 +112,24 @@ const Characters = () => {
 
   useEffect(() => {
     setVisibleCount(6);
-  }, [searchTerm]);
+  }, [debouncedSearchTerm]);
+
+  // Предзагрузка изображений для улучшения UX
+  useEffect(() => {
+    if (filteredCharacters.length > 0) {
+      const nextImages = filteredCharacters
+        .slice(visibleCount, visibleCount + 4)
+        .map(char => {
+          const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8001';
+          return char.image?.startsWith('http') ? char.image : `${apiUrl}${char.image}`;
+        })
+        .filter(Boolean);
+      
+      if (nextImages.length > 0) {
+        preloadImages(nextImages, { maxConcurrent: 2 }).catch(console.warn);
+      }
+    }
+  }, [filteredCharacters, visibleCount]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -145,7 +185,12 @@ const Characters = () => {
           <>
             <div className="grid grid-cols-2 gap-3">
               {visibleCharacters.map(character => (
-                <CharacterCard key={character.id} character={character} />
+                <CharacterCard 
+                  key={character.id} 
+                  character={character}
+                  getCharacterName={getCharacterName}
+                  getCharacterDescription={getCharacterDescription}
+                />
               ))}
             </div>
             {hasMore && (
