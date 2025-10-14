@@ -11,6 +11,8 @@ const Navbar = () => {
   const { language, switchLanguage } = useLanguage();
   const [showLanguageMenu, setShowLanguageMenu] = useState(false);
   const [crystalBalance, setCrystalBalance] = useState(0);
+  const [messagesLeft, setMessagesLeft] = useState(0);
+  const [messageLimit, setMessageLimit] = useState(0);
   const [userId, setUserId] = useState(null);
 
   const menuItems = [
@@ -45,12 +47,12 @@ const Navbar = () => {
       
       if (currentUserId) {
         setUserId(currentUserId);
-        loadCrystalBalance(currentUserId);
+        loadUserData(currentUserId);
       }
     }
   }, []);
 
-  const loadCrystalBalance = async (user_id) => {
+  const loadUserData = async (user_id) => {
     try {
       const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8001';
       const response = await fetch(`${apiUrl}/users/${user_id}/profile`);
@@ -58,10 +60,20 @@ const Navbar = () => {
       if (response.ok) {
         const userData = await response.json();
         setCrystalBalance(userData.crystal_balance || 0);
+        
+        // Вычисляем количество оставшихся сообщений из данных API
+        const limit = userData.free_messages_limit || 10;
+        const used = userData.messages_today || 0;
+        const left = Math.max(0, limit - used);
+        
+        setMessageLimit(limit);
+        setMessagesLeft(left);
       }
     } catch (error) {
-      console.error('Error loading crystal balance:', error);
+      console.error('Error loading user data:', error);
       setCrystalBalance(0);
+      setMessageLimit(10);
+      setMessagesLeft(10);
     }
   };
 
@@ -71,6 +83,29 @@ const Navbar = () => {
 
   const isActive = (path) => {
     return location.pathname === path;
+  };
+
+  // Компонент отображения счетчика сообщений
+  const MessageDisplay = ({ isMobile = false }) => {
+    const isLow = messagesLeft <= 2;
+    const progressPercent = messageLimit > 0 ? (messagesLeft / messageLimit) * 100 : 0;
+    
+    return (
+      <div className={`flex items-center space-x-2 ${isMobile ? 'px-2 py-1' : 'px-3 py-2'} bg-gradient-to-r from-green-500/20 to-emerald-500/20 border border-green-500/30 rounded-lg relative overflow-hidden`}>
+        {/* Прогресс-бар фон */}
+        <div className="absolute inset-0 bg-gradient-to-r from-green-500/10 to-emerald-500/10">
+          <div 
+            className={`h-full transition-all duration-500 ${isLow ? 'bg-gradient-to-r from-red-500/30 to-orange-500/30' : 'bg-gradient-to-r from-green-500/30 to-emerald-500/30'}`}
+            style={{ width: `${progressPercent}%` }}
+          />
+        </div>
+        
+        <span className="text-lg relative z-10">💬</span>
+        <span className={`font-semibold relative z-10 ${isLow ? 'text-red-400' : 'text-green-400'} ${isMobile ? 'text-sm' : 'text-sm'}`}>
+          {messagesLeft}/{messageLimit}
+        </span>
+      </div>
+    );
   };
 
   // Компонент отображения кристаллов
@@ -122,6 +157,9 @@ const Navbar = () => {
                   <span>{item.label}</span>
                 </Link>
               ))}
+              
+              {/* Счетчик сообщений */}
+              <MessageDisplay />
               
               {/* Кристаллы */}
               <CrystalDisplay />
@@ -213,6 +251,9 @@ const Navbar = () => {
           
           {/* Мобильный профиль и переключатель языка */}
           <div className="flex items-center space-x-2">
+            {/* Счетчик сообщений мобильная версия */}
+            <MessageDisplay isMobile={true} />
+            
             {/* Кристаллы мобильная версия */}
             <CrystalDisplay isMobile={true} />
             
