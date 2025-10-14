@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import scenes from './data/scenes';
-import characters from './data/characters';
 import AboutCharacter from './AboutCharacter';
 import CharacterGallery from './CharacterGallery';
 import Footer from './Footer';
@@ -17,22 +15,58 @@ const SceneSelection = () => {
   const botUsername = import.meta.env.VITE_BOT_USERNAME;
 
   useEffect(() => {
-    // Найти персонажа в локальных данных
-    const selectedCharacter = characters.find(char => char.id === characterId);
+    const fetchCharacterData = async () => {
+      try {
+        const apiUrl = import.meta.env.VITE_API_URL;
+        
+        // Загружаем данные персонажа
+        const characterResponse = await fetch(`${apiUrl}/characters/${characterId}`);
+        if (characterResponse.ok) {
+          const characterData = await characterResponse.json();
+          setCharacter(characterData);
 
-    if (selectedCharacter) {
-      setCharacter(selectedCharacter);
+          // Загружаем сцены персонажа
+          const scenesResponse = await fetch(`${apiUrl}/characters/${characterId}/scenes`);
+          if (scenesResponse.ok) {
+            const scenesData = await scenesResponse.json();
+            setAvailableScenes(scenesData);
+          } else {
+            console.error('Failed to fetch character scenes');
+            setAvailableScenes([]);
+          }
+        } else {
+          console.error('Failed to fetch character data');
+          setCharacter(null);
+        }
+      } catch (error) {
+        console.error('Error fetching character data:', error);
+        // Fallback к локальным данным при ошибке API
+        try {
+          const { default: characters } = await import('./data/characters');
+          const { default: scenes } = await import('./data/scenes');
+          
+          const selectedCharacter = characters.find(char => char.id === characterId);
+          if (selectedCharacter) {
+            setCharacter(selectedCharacter);
+            
+            // Фильтруем сцены по available_scenes персонажа
+            const characterScenes = scenes.filter(scene =>
+              selectedCharacter.available_scenes &&
+              selectedCharacter.available_scenes.includes(scene.id)
+            );
+            setAvailableScenes(characterScenes);
+          }
+        } catch (fallbackError) {
+          console.error('Fallback error:', fallbackError);
+          setCharacter(null);
+          setAvailableScenes([]);
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
 
-      // Фильтруем сцены по available_scenes персонажа
-      const characterScenes = scenes.filter(scene =>
-        selectedCharacter.available_scenes &&
-        selectedCharacter.available_scenes.includes(scene.id)
-      );
-
-      setAvailableScenes(characterScenes);
-    }
-
-    setLoading(false);
+    fetchCharacterData();
   }, [characterId]);
 
   useEffect(() => {

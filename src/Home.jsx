@@ -19,11 +19,28 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-    import('./data/characters.js').then(module => {
-      const allCharacters = module.default;
-      const filtered = allCharacters.filter(character => character.enabled !== false);
-      setCharacters(filtered);
-    });
+    const fetchCharacters = async () => {
+      try {
+        const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8001';
+        const response = await fetch(`${apiUrl}/characters`);
+        const data = await response.json();
+        setCharacters(data);
+      } catch (error) {
+        console.error('Error fetching characters:', error);
+        // Fallback к локальным данным при ошибке API
+        try {
+          const module = await import('./data/characters.js');
+          const allCharacters = module.default;
+          const filtered = allCharacters.filter(character => character.enabled !== false);
+          setCharacters(filtered);
+        } catch (fallbackError) {
+          console.error('Fallback error:', fallbackError);
+          setCharacters([]);
+        }
+      }
+    };
+
+    fetchCharacters();
   }, []);
 
   const handleTelegramLinkClick = (e) => {
