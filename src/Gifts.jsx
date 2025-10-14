@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import GiftCard from './GiftCard';
+import CrystalCard from './CrystalCard';
 import { useTranslation } from './hooks/useTranslation';
 
 const Gifts = () => {
   const { language } = useTranslation();
   const [gifts, setGifts] = useState([]);
+  const [crystals, setCrystals] = useState([]);
+  const [activeTab, setActiveTab] = useState('gifts');
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [chatId, setChatId] = useState(null);
@@ -40,8 +43,9 @@ const Gifts = () => {
       }
     }
 
-    // Загружаем подарки из API
+    // Загружаем подарки и кристаллы из API
     loadGifts();
+    loadCrystals();
   }, []);
 
   const loadGifts = async () => {
@@ -71,6 +75,23 @@ const Gifts = () => {
       }
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const loadCrystals = async () => {
+    try {
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8001';
+      const response = await fetch(`${apiUrl}/crystals`);
+
+      if (!response.ok) {
+        throw new Error('Не удалось загрузить кристаллы');
+      }
+
+      const crystalsData = await response.json();
+      setCrystals(crystalsData);
+    } catch (err) {
+      console.error('Error loading crystals:', err);
+      setCrystals([]);
     }
   };
 
@@ -162,25 +183,153 @@ const Gifts = () => {
     }
   };
 
+  const handleCrystalSelect = async (crystalId) => {
+    if (window.Telegram?.WebApp) {
+      try {
+        const tg = window.Telegram.WebApp;
+
+        if (!chatId) {
+          throw new Error('Chat ID not available');
+        }
+
+        console.log('Creating invoice for crystal:', crystalId, 'chat:', chatId);
+
+        const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8001';
+        const response = await fetch(`${apiUrl}/invoice`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            item_type: 'crystal',
+            item_id: crystalId,
+            chat_id: chatId
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error('Не удалось создать инвойс для кристаллов');
+        }
+
+        const invoiceData = await response.json();
+        console.log('Crystal invoice data:', invoiceData);
+
+        if (invoiceData.error) {
+          throw new Error(invoiceData.error);
+        }
+
+        const invoiceLink = invoiceData.invoice_url;
+        if (!invoiceLink) {
+          throw new Error('Не удалось получить ссылку на инвойс');
+        }
+
+        console.log('Opening crystal invoice:', invoiceLink);
+
+        tg.openInvoice(invoiceLink, (status) => {
+          console.log('Crystal payment status:', status);
+
+          if (status === 'paid') {
+            const crystal = crystals.find(c => c.id === crystalId);
+            const successMessage = language === 'en' ? 
+              `🎉 Payment successful! ${crystal?.crystal_amount} crystals purchased!` :
+              `🎉 Оплата прошла успешно! ${crystal?.crystal_amount} кристаллов куплено!`;
+            
+            tg.showAlert(successMessage);
+            
+            setTimeout(() => {
+              tg.close();
+            }, 2000);
+            
+          } else if (status === 'cancelled') {
+            const cancelMessage = language === 'en' ? 'Payment cancelled' : 'Оплата отменена';
+            tg.showAlert(cancelMessage);
+          } else if (status === 'failed') {
+            const failMessage = language === 'en' ? 'Payment failed' : 'Ошибка оплаты';
+            tg.showAlert(failMessage);
+          }
+        });
+
+      } catch (error) {
+        console.error('Error purchasing crystals:', error);
+        const errorMessage = language === 'en' ? 
+          `Error: ${error.message}` : 
+          `Ошибка: ${error.message}`;
+        
+        if (window.Telegram?.WebApp) {
+          window.Telegram.WebApp.showAlert(errorMessage);
+        } else {
+          alert(errorMessage);
+        }
+      }
+    } else {
+      const noWebAppMessage = language === 'en' ? 
+        'Telegram WebApp not available' : 
+        'Telegram WebApp не доступен';
+      alert(noWebAppMessage);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-black text-white p-4">
       <div className="max-w-6xl mx-auto">
-        <h1 className="text-4xl font-bold text-center mb-8 bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">
-          {language === 'en' ? '🎁 Gift Shop' : '🎁 Магазин подарков'}
+        <h1 className="text-4xl font-bold text-center mb-4 bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">
+          {activeTab === 'gifts' 
+            ? (language === 'en' ? '🎁 Gift Shop' : '🎁 Магазин подарков')
+            : (language === 'en' ? '💎 Crystal Shop' : '💎 Магазин кристаллов')
+          }
         </h1>
         <p className="text-center text-gray-400 mb-8">
-          {language === 'en' ? 'Choose a gift to delight the character' : 'Выберите подарок, чтобы порадовать персонажа'}
+          {activeTab === 'gifts' 
+            ? (language === 'en' ? 'Choose a gift to delight the character' : 'Выберите подарок, чтобы порадовать персонажа')
+            : (language === 'en' ? 'Buy crystals to unlock more conversations' : 'Купите кристаллы для дополнительных сообщений')
+          }
         </p>
+
+        {/* Табы */}
+        <div className="flex justify-center mb-8">
+          <div className="bg-gray-800 rounded-lg p-1 flex">
+            <button
+              onClick={() => setActiveTab('gifts')}
+              className={`px-6 py-3 rounded-lg font-semibold transition-all ${
+                activeTab === 'gifts'
+                  ? 'bg-purple-600 text-white'
+                  : 'text-gray-400 hover:text-white'
+              }`}
+            >
+              🎁 {language === 'en' ? 'Gifts' : 'Подарки'}
+            </button>
+            <button
+              onClick={() => setActiveTab('crystals')}
+              className={`px-6 py-3 rounded-lg font-semibold transition-all ${
+                activeTab === 'crystals'
+                  ? 'bg-blue-600 text-white'
+                  : 'text-gray-400 hover:text-white'
+              }`}
+            >
+              💎 {language === 'en' ? 'Crystals' : 'Кристаллы'}
+            </button>
+          </div>
+        </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {gifts.map(gift => (
-            <GiftCard 
-              key={gift.id} 
-              gift={gift} 
-              showBuyButton={true}
-              onSelect={handleGiftSelect}
-            />
-          ))}
+          {activeTab === 'gifts' 
+            ? gifts.map(gift => (
+                <GiftCard 
+                  key={gift.id} 
+                  gift={gift} 
+                  showBuyButton={true}
+                  onSelect={handleGiftSelect}
+                />
+              ))
+            : crystals.map(crystal => (
+                <CrystalCard 
+                  key={crystal.id} 
+                  crystal={crystal} 
+                  showBuyButton={true}
+                  onSelect={handleCrystalSelect}
+                />
+              ))
+          }
         </div>
       </div>
     </div>

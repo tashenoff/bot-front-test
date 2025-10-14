@@ -1,14 +1,17 @@
-import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { FaHome, FaUsers, FaQuestionCircle, FaGlobe, FaChevronDown, FaStar, FaUser } from 'react-icons/fa';
+import React, { useState, useEffect } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { FaHome, FaUsers, FaQuestionCircle, FaGlobe, FaChevronDown, FaStar, FaUser, FaPlus } from 'react-icons/fa';
 import { useTranslation } from './hooks/useTranslation';
 import { useLanguage } from './contexts/LanguageContext';
 
 const Navbar = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const { t } = useTranslation();
   const { language, switchLanguage } = useLanguage();
   const [showLanguageMenu, setShowLanguageMenu] = useState(false);
+  const [crystalBalance, setCrystalBalance] = useState(0);
+  const [userId, setUserId] = useState(null);
 
   const menuItems = [
     { to: '/', label: t('home'), icon: <FaHome /> },
@@ -26,9 +29,65 @@ const Navbar = () => {
 
   const currentLanguage = languages.find(lang => lang.code === language);
 
+  useEffect(() => {
+    // Инициализация и получение пользователя из Telegram WebApp
+    if (window.Telegram?.WebApp) {
+      const tg = window.Telegram.WebApp;
+      const webAppUser = tg.initDataUnsafe?.user;
+      const webAppChat = tg.initDataUnsafe?.chat;
+      
+      let currentUserId = null;
+      if (webAppChat) {
+        currentUserId = webAppChat.id;
+      } else if (webAppUser) {
+        currentUserId = webAppUser.id;
+      }
+      
+      if (currentUserId) {
+        setUserId(currentUserId);
+        loadCrystalBalance(currentUserId);
+      }
+    }
+  }, []);
+
+  const loadCrystalBalance = async (user_id) => {
+    try {
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8001';
+      const response = await fetch(`${apiUrl}/users/${user_id}/profile`);
+      
+      if (response.ok) {
+        const userData = await response.json();
+        setCrystalBalance(userData.crystal_balance || 0);
+      }
+    } catch (error) {
+      console.error('Error loading crystal balance:', error);
+      setCrystalBalance(0);
+    }
+  };
+
+  const handleCrystalClick = () => {
+    navigate('/gifts');
+  };
+
   const isActive = (path) => {
     return location.pathname === path;
   };
+
+  // Компонент отображения кристаллов
+  const CrystalDisplay = ({ isMobile = false }) => (
+    <div className={`flex items-center space-x-2 ${isMobile ? 'px-2 py-1' : 'px-3 py-2'} bg-gradient-to-r from-blue-500/20 to-cyan-500/20 border border-blue-500/30 rounded-lg`}>
+      <span className="text-lg">💎</span>
+      <span className={`font-semibold text-blue-400 ${isMobile ? 'text-sm' : 'text-sm'}`}>
+        {crystalBalance}
+      </span>
+      <button
+        onClick={handleCrystalClick}
+        className="ml-1 w-6 h-6 bg-blue-500 hover:bg-blue-600 rounded-full flex items-center justify-center transition-colors"
+      >
+        <FaPlus className="text-xs text-white" />
+      </button>
+    </div>
+  );
 
   return (
     <>
@@ -63,6 +122,9 @@ const Navbar = () => {
                   <span>{item.label}</span>
                 </Link>
               ))}
+              
+              {/* Кристаллы */}
+              <CrystalDisplay />
               
               {/* Профиль */}
               <Link
@@ -151,6 +213,9 @@ const Navbar = () => {
           
           {/* Мобильный профиль и переключатель языка */}
           <div className="flex items-center space-x-2">
+            {/* Кристаллы мобильная версия */}
+            <CrystalDisplay isMobile={true} />
+            
             <Link
               to="/profile"
               className={`flex items-center px-2 py-1 rounded-md transition duration-300 ${
