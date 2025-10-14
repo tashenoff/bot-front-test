@@ -43,33 +43,31 @@ const CrystalCard = ({ crystal, showBuyButton = false, onSelect }) => {
   };
 
   return (
-    <div className={`${getCardStyle()} rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-all transform hover:scale-105 relative h-80`}>
+    <div className={`${getCardStyle()} rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-all transform hover:scale-105 relative min-h-96`}>
       {getBadge()}
       
       {/* Кристалл иконка */}
-      <div className="flex justify-center items-center h-32 pt-6">
-        <div className="text-6xl">💎</div>
+      <div className="flex justify-center items-center h-24 pt-4">
+        <div className="text-5xl">💎</div>
       </div>
       
-      <div className="p-4 flex flex-col justify-between h-48">
-        <div>
-          <h3 className="text-xl font-bold mb-2 text-white text-center">{crystalName}</h3>
-          <p className="text-gray-200 text-sm mb-4 text-center">{crystalDescription}</p>
+      <div className="p-4 flex flex-col gap-4">
+        <div className="text-center">
+          <h3 className="text-lg font-bold mb-2 text-white">{crystalName}</h3>
+          <p className="text-gray-200 text-sm mb-3">{crystalDescription}</p>
           
           {/* Количество кристаллов */}
-          <div className="text-center mb-4">
-            <div className="text-3xl font-bold text-white mb-1">
+          <div className="mb-3">
+            <div className="text-2xl font-bold text-white mb-1">
               {crystal.crystal_amount}
             </div>
             <div className="text-sm text-gray-300">
               {language === 'en' ? 'crystals' : 'кристаллов'}
             </div>
           </div>
-        </div>
-        
-        <div>
+          
           {/* Цена */}
-          <div className="text-center mb-4">
+          <div className="mb-4">
             <div className="text-yellow-400 font-bold text-lg">
               {crystal.price} ⭐
             </div>
@@ -77,16 +75,26 @@ const CrystalCard = ({ crystal, showBuyButton = false, onSelect }) => {
               ≈ {(crystal.price / crystal.crystal_amount).toFixed(2)} ⭐/{language === 'en' ? 'msg' : 'сообщ'}
             </div>
           </div>
-          
-          {showBuyButton && (
-            <button 
-              className="w-full bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white font-bold py-3 px-4 rounded-lg transition-all transform hover:scale-105"
-              onClick={() => onSelect && onSelect(crystal.id)}
-            >
-              {language === 'en' ? 'Buy Crystals' : 'Купить кристаллы'}
-            </button>
-          )}
         </div>
+        
+        {/* КНОПКА ПОКУПКИ - ВСЕГДА ВИДИМАЯ */}
+        <button 
+          className="w-full bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white font-bold py-4 px-4 rounded-lg transition-all transform hover:scale-105 shadow-lg border-2 border-white"
+          onClick={() => {
+            console.log('🎯 Button clicked for crystal:', crystal.id);
+            if (onSelect) {
+              onSelect(crystal.id);
+            }
+          }}
+          style={{
+            fontSize: '14px',
+            fontWeight: 'bold',
+            textTransform: 'uppercase',
+            letterSpacing: '1px'
+          }}
+        >
+          🔥 {language === 'en' ? 'BUY NOW!' : 'КУПИТЬ СЕЙЧАС!'}
+        </button>
       </div>
     </div>
   );

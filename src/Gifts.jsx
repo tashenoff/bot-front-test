@@ -81,17 +81,35 @@ const Gifts = () => {
   const loadCrystals = async () => {
     try {
       const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8001';
+      console.log('🔄 Loading crystals from:', `${apiUrl}/crystals`);
       const response = await fetch(`${apiUrl}/crystals`);
 
+      console.log('📥 Crystals response:', response.status, response.ok);
+
       if (!response.ok) {
-        throw new Error('Не удалось загрузить кристаллы');
+        throw new Error(`Не удалось загрузить кристаллы: ${response.status}`);
       }
 
       const crystalsData = await response.json();
+      console.log('💎 Loaded crystals:', crystalsData);
       setCrystals(crystalsData);
     } catch (err) {
-      console.error('Error loading crystals:', err);
-      setCrystals([]);
+      console.error('❌ Error loading crystals:', err);
+      
+      // Fallback к тестовым данным
+      const testCrystals = [
+        {
+          id: 'crystal_pack_small',
+          name: '💎 Маленький пакет кристаллов',
+          description: '50 дополнительных сообщений',
+          price: 10,
+          crystal_amount: 50,
+          image: '',
+          popular: false,
+          best_value: false
+        }
+      ];
+      setCrystals(testCrystals);
     }
   };
 
@@ -184,6 +202,8 @@ const Gifts = () => {
   };
 
   const handleCrystalSelect = async (crystalId) => {
+    console.log('🎯 Crystal button clicked! ID:', crystalId, 'Chat ID:', chatId);
+    
     if (window.Telegram?.WebApp) {
       try {
         const tg = window.Telegram.WebApp;
