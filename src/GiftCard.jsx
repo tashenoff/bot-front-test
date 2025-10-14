@@ -41,7 +41,7 @@ const GiftCard = ({ gift, showBuyButton = false, onSelect }) => {
         <h3 className="text-xl font-bold mb-2 text-white">{giftName}</h3>
         <p className="text-gray-300 text-sm mb-4">{giftDescription}</p>
         <div className="text-purple-400 font-bold text-lg mb-4">
-          {gift.price} 🌟
+          {gift.crystal_price} 💎
         </div>
         {showBuyButton && (
           <button 

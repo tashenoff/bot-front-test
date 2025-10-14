@@ -123,63 +123,38 @@ const Gifts = () => {
           throw new Error('Chat ID not available');
         }
 
-        console.log('Creating invoice for gift:', giftId, 'chat:', chatId);
+        console.log('Buying gift with crystals:', giftId, 'chat:', chatId);
 
-        // Получаем ссылку на инвойс из API
+        // Покупаем подарок за кристаллы через API
         const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8001';
-        const response = await fetch(`${apiUrl}/gifts/${giftId}/invoice?chat_id=${chatId}`);
-
-        if (!response.ok) {
-          throw new Error('Не удалось создать инвойс');
-        }
-
-        const invoiceData = await response.json();
-        console.log('Invoice data:', invoiceData);
-
-        // Проверяем на ошибки
-        if (invoiceData.error) {
-          throw new Error(invoiceData.error);
-        }
-
-        // Получаем ссылку на инвойс
-        const invoiceLink = invoiceData.invoice_link;
-        if (!invoiceLink) {
-          throw new Error('Не удалось получить ссылку на инвойс');
-        }
-
-        console.log('Opening invoice:', invoiceLink);
-
-        // Открываем инвойс через Telegram WebApp
-        tg.openInvoice(invoiceLink, (status) => {
-          console.log('Payment status:', status);
-
-          if (status === 'paid') {
-            // Оплата успешна - показываем поздравление
-            const successMessage = language === 'en' ? 
-              `🎉 Payment successful! Gift "${invoiceData.gift_name}" purchased!` :
-              `🎉 Оплата прошла успешно! Подарок "${invoiceData.gift_name}" куплен!`;
-            
-            // Показываем уведомление через Telegram
-            tg.showAlert(successMessage);
-            
-            // Закрываем WebApp через некоторое время
-            setTimeout(() => {
-              tg.close();
-            }, 2000);
-            
-          } else if (status === 'cancelled') {
-            // Оплата отменена
-            const cancelMessage = language === 'en' ? 'Payment cancelled' : 'Оплата отменена';
-            tg.showAlert(cancelMessage);
-          } else if (status === 'failed') {
-            // Оплата неуспешна
-            const failMessage = language === 'en' ? 'Payment failed' : 'Ошибка оплаты';
-            tg.showAlert(failMessage);
-          } else {
-            // Другие статусы
-            console.log('Unknown payment status:', status);
+        const response = await fetch(`${apiUrl}/gifts/${giftId}/buy?chat_id=${chatId}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
           }
         });
+
+        const responseData = await response.json();
+        console.log('Gift purchase response:', responseData);
+
+        if (!response.ok) {
+          throw new Error(responseData.detail || 'Не удалось купить подарок');
+        }
+
+        // Покупка успешна
+        if (responseData.success) {
+          const successMessage = language === 'en' ? 
+            `🎉 Gift purchased! "${responseData.gift_name}" bought for ${responseData.crystal_price} crystals!` :
+            `🎉 Подарок куплен! "${responseData.gift_name}" за ${responseData.crystal_price} кристаллов!`;
+          
+          // Показываем уведомление через Telegram
+          tg.showAlert(successMessage);
+          
+          // Закрываем WebApp через некоторое время
+          setTimeout(() => {
+            tg.close();
+          }, 2000);
+        }
 
       } catch (error) {
         console.error('Error purchasing gift:', error);
