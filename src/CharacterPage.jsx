@@ -127,13 +127,6 @@ const CharacterPage = () => {
 
   return (
     <div className="min-h-screen bg-black text-white">
-      {/* Debug info */}
-      <div className="bg-gray-800 p-4 text-sm">
-        <div>Character ID: {characterId} | Loading: {loading ? 'ДА' : 'НЕТ'}</div>
-        {error && <div className="text-red-400">Error: {error}</div>}
-        <div className="text-yellow-400">Debug: {debugInfo}</div>
-      </div>
-
       {loading && (
         <div className="flex items-center justify-center min-h-64">
           <div>Загрузка...</div>
@@ -149,13 +142,13 @@ const CharacterPage = () => {
       {!loading && character && (
         <div className="container mx-auto px-4 py-6">
           {/* Фото персонажа */}
-          <div className="mb-8 text-center">
+          <div className="mb-8">
             <img 
               src={getImageUrl(character.image)} 
               alt={character.name}
-              className="w-64 h-64 object-cover rounded-lg mx-auto shadow-lg"
+              className="w-full max-w-md h-64 md:h-80 object-cover rounded-lg mx-auto shadow-lg"
             />
-            <h1 className="text-3xl font-bold mt-4 text-purple-400">{character.name}</h1>
+            <h1 className="text-3xl font-bold mt-4 text-purple-400 text-center">{character.name}</h1>
           </div>
 
           {/* О персонаже */}
