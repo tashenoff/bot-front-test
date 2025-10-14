@@ -215,17 +215,7 @@ const Gifts = () => {
         console.log('Creating invoice for crystal:', crystalId, 'chat:', chatId);
 
         const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8001';
-        const response = await fetch(`${apiUrl}/invoice`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            item_type: 'crystal',
-            item_id: crystalId,
-            chat_id: chatId
-          })
-        });
+        const response = await fetch(`${apiUrl}/crystals/${crystalId}/invoice?chat_id=${chatId}`);
 
         if (!response.ok) {
           throw new Error('Не удалось создать инвойс для кристаллов');
@@ -238,7 +228,7 @@ const Gifts = () => {
           throw new Error(invoiceData.error);
         }
 
-        const invoiceLink = invoiceData.invoice_url;
+        const invoiceLink = invoiceData.invoice_link;
         if (!invoiceLink) {
           throw new Error('Не удалось получить ссылку на инвойс');
         }
