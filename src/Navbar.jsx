@@ -61,13 +61,22 @@ const Navbar = () => {
         const userData = await response.json();
         setCrystalBalance(userData.crystal_balance || 0);
         
-        // Вычисляем количество оставшихся сообщений из данных API
-        const limit = userData.free_messages_limit || 10;
-        const used = userData.messages_today || 0;
-        const left = Math.max(0, limit - used);
+        // Проверяем премиум статус
+        const isPremium = userData.subscription?.is_premium || false;
         
-        setMessageLimit(limit);
-        setMessagesLeft(left);
+        if (isPremium) {
+          // Премиум пользователи - безлимит
+          setMessageLimit(999);  // "Безлимит"
+          setMessagesLeft(999);
+        } else {
+          // Обычные пользователи - ограничение
+          const limit = userData.free_messages_limit || 10;
+          const used = userData.messages_today || 0;
+          const left = Math.max(0, limit - used);
+          
+          setMessageLimit(limit);
+          setMessagesLeft(left);
+        }
       }
     } catch (error) {
       console.error('Error loading user data:', error);
@@ -87,22 +96,39 @@ const Navbar = () => {
 
   // Компонент отображения счетчика сообщений
   const MessageDisplay = ({ isMobile = false }) => {
-    const isLow = messagesLeft <= 2;
-    const progressPercent = messageLimit > 0 ? (messagesLeft / messageLimit) * 100 : 0;
+    const isPremium = messageLimit === 999;
+    const isLow = messagesLeft <= 2 && !isPremium;
+    const progressPercent = isPremium ? 100 : (messageLimit > 0 ? (messagesLeft / messageLimit) * 100 : 0);
     
     return (
-      <div className={`flex items-center space-x-2 ${isMobile ? 'px-2 py-1' : 'px-3 py-2'} bg-gradient-to-r from-green-500/20 to-emerald-500/20 border border-green-500/30 rounded-lg relative overflow-hidden`}>
+      <div className={`flex items-center space-x-2 ${isMobile ? 'px-2 py-1' : 'px-3 py-2'} ${
+        isPremium 
+          ? 'bg-gradient-to-r from-yellow-500/20 to-amber-500/20 border border-yellow-500/30' 
+          : 'bg-gradient-to-r from-green-500/20 to-emerald-500/20 border border-green-500/30'
+      } rounded-lg relative overflow-hidden`}>
         {/* Прогресс-бар фон */}
         <div className="absolute inset-0 bg-gradient-to-r from-green-500/10 to-emerald-500/10">
           <div 
-            className={`h-full transition-all duration-500 ${isLow ? 'bg-gradient-to-r from-red-500/30 to-orange-500/30' : 'bg-gradient-to-r from-green-500/30 to-emerald-500/30'}`}
+            className={`h-full transition-all duration-500 ${
+              isPremium 
+                ? 'bg-gradient-to-r from-yellow-500/30 to-amber-500/30'
+                : isLow 
+                  ? 'bg-gradient-to-r from-red-500/30 to-orange-500/30' 
+                  : 'bg-gradient-to-r from-green-500/30 to-emerald-500/30'
+            }`}
             style={{ width: `${progressPercent}%` }}
           />
         </div>
         
         <span className="text-lg relative z-10">💬</span>
-        <span className={`font-semibold relative z-10 ${isLow ? 'text-red-400' : 'text-green-400'} ${isMobile ? 'text-sm' : 'text-sm'}`}>
-          {messagesLeft}/{messageLimit}
+        <span className={`font-semibold relative z-10 ${
+          isPremium 
+            ? 'text-yellow-400' 
+            : isLow 
+              ? 'text-red-400' 
+              : 'text-green-400'
+        } ${isMobile ? 'text-sm' : 'text-sm'}`}>
+          {isPremium ? '∞' : `${messagesLeft}/${messageLimit}`}
         </span>
       </div>
     );
@@ -132,9 +158,6 @@ const Navbar = () => {
           <div className="flex justify-between items-center h-16">
             {/* Логотип */}
             <Link to="/" className="flex items-center space-x-2">
-              <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">
-                Waifu Dreams
-              </span>
             </Link>
 
             {/* Десктопное меню */}
@@ -244,9 +267,6 @@ const Navbar = () => {
       <header className="md:hidden bg-gray-950/80 backdrop-blur-lg shadow-lg border-b border-gray-800/50">
         <div className="flex justify-between items-center h-16 px-4">
           <Link to="/" className="flex items-center space-x-2">
-            <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">
-              Waifu Dreams
-            </span>
           </Link>
           
           {/* Мобильный профиль и переключатель языка */}
