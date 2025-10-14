@@ -9,6 +9,15 @@ const CharacterCard = ({ character }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
 
+  // Функция для получения полного URL изображения
+  const getImageUrl = (imagePath) => {
+    if (!imagePath) return '';
+    if (imagePath.startsWith('http')) return imagePath;
+    
+    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8001';
+    return `${apiUrl}${imagePath}`;
+  };
+
   const handleChat = (e) => {
     e.preventDefault();
     setIsModalOpen(true);
@@ -60,7 +69,7 @@ const CharacterCard = ({ character }) => {
             </div>
           )}
           <img 
-            src={character.image} 
+            src={getImageUrl(character.image)} 
             alt={name} 
             className={`w-full h-full min-h-[300px] object-cover transition-opacity duration-300 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
             onLoad={() => setImageLoaded(true)}

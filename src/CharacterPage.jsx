@@ -12,6 +12,15 @@ const CharacterPage = () => {
   const [debugInfo, setDebugInfo] = useState('Инициализация...');
   const botUsername = import.meta.env.VITE_BOT_USERNAME || 'test_bot';
 
+  // Функция для получения полного URL изображения
+  const getImageUrl = (imagePath) => {
+    if (!imagePath) return '';
+    if (imagePath.startsWith('http')) return imagePath;
+    
+    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8001';
+    return `${apiUrl}${imagePath}`;
+  };
+
   // Упрощенные функции для получения названий сцен
   const getSceneName = (scene) => {
     return scene.name || 'Безымянная сцена';
@@ -142,7 +151,7 @@ const CharacterPage = () => {
           {/* Фото персонажа */}
           <div className="mb-8 text-center">
             <img 
-              src={character.image} 
+              src={getImageUrl(character.image)} 
               alt={character.name}
               className="w-64 h-64 object-cover rounded-lg mx-auto shadow-lg"
             />
