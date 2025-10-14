@@ -156,11 +156,7 @@ const Navbar = () => {
       <nav className="hidden md:block bg-gray-950/80 backdrop-blur-lg shadow-lg border-b border-gray-800/50">
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex justify-between items-center h-16">
-            {/* Логотип */}
-            <Link to="/" className="flex items-center space-x-2">
-            </Link>
-
-            {/* Десктопное меню */}
+            {/* Левая группа: Меню + Счетчики */}
             <div className="flex items-center space-x-8">
               {menuItems.map((item) => (
                 <Link
@@ -186,7 +182,10 @@ const Navbar = () => {
               
               {/* Кристаллы */}
               <CrystalDisplay />
-              
+            </div>
+
+            {/* Правая группа: Профиль + Язык */}
+            <div className="flex items-center space-x-4">
               {/* Профиль */}
               <Link
                 to="/profile"
@@ -263,20 +262,20 @@ const Navbar = () => {
         </div>
       </nav>
 
-      {/* Мобильный хедер (логотип + переключатель языка) */}
+      {/* Мобильный хедер */}
       <header className="md:hidden bg-gray-950/80 backdrop-blur-lg shadow-lg border-b border-gray-800/50">
         <div className="flex justify-between items-center h-16 px-4">
-          <Link to="/" className="flex items-center space-x-2">
-          </Link>
-          
-          {/* Мобильный профиль и переключатель языка */}
+          {/* Левая группа: Счетчики */}
           <div className="flex items-center space-x-2">
             {/* Счетчик сообщений мобильная версия */}
             <MessageDisplay isMobile={true} />
             
             {/* Кристаллы мобильная версия */}
             <CrystalDisplay isMobile={true} />
-            
+          </div>
+          
+          {/* Правая группа: Профиль + Язык */}
+          <div className="flex items-center space-x-2">
             <Link
               to="/profile"
               className={`flex items-center px-2 py-1 rounded-md transition duration-300 ${
