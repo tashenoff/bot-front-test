@@ -71,14 +71,14 @@ const CharacterCard = ({ character }) => {
           <h3 className="text-base font-bold text-purple-400 tracking-wide mb-4">{name}</h3>
           <button
             onClick={handleAboutCharacter}
-            className="text-gray-400 hover:text-purple-400 transition-colors text-[10px] uppercase tracking-widest flex items-center justify-between w-full mb-4"
+            className="text-gray-400 hover:text-purple-400 transition-colors text-[10px] uppercase tracking-widest flex items-center justify-between w-full mb-4 border border-gray-600/30 hover:border-purple-400/50 rounded py-1.5 px-4"
           >
-            <span>{t('aboutCharacter')}</span>
+            <span className="font-bold">{t('aboutCharacter')}</span>
             <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
             </svg>
           </button>
-          
+
           <button
             onClick={handleChat}
             className="w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold text-sm py-1.5 px-4 rounded transition duration-300"

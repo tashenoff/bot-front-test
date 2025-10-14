@@ -13,7 +13,6 @@ const Navbar = () => {
   const menuItems = [
     { to: '/', label: t('home'), icon: <FaHome /> },
     { to: '/characters', label: t('characters'), icon: <FaUsers /> },
-    { to: '/profile', label: t('profile') || 'Профиль', icon: <FaUser /> },
     { to: '/subscription', label: t('premium'), icon: <FaStar />, premium: true },
     { to: '/help', label: t('help'), icon: <FaQuestionCircle /> }
   ];
@@ -65,6 +64,18 @@ const Navbar = () => {
                 </Link>
               ))}
               
+              {/* Профиль */}
+              <Link
+                to="/profile"
+                className={`flex items-center px-3 py-2 rounded-md text-sm font-medium transition duration-300 ${
+                  isActive('/profile')
+                    ? 'text-purple-400 bg-gray-700'
+                    : 'text-gray-300 hover:text-white hover:bg-gray-700'
+                }`}
+              >
+                <FaUser />
+              </Link>
+
               {/* Переключатель языка */}
               <div className="relative">
                 <button
@@ -75,7 +86,7 @@ const Navbar = () => {
                   <span>{currentLanguage?.flag} {currentLanguage?.name}</span>
                   <FaChevronDown className={`transform transition-transform ${showLanguageMenu ? 'rotate-180' : ''}`} />
                 </button>
-                
+
                 {showLanguageMenu && (
                   <div className="absolute right-0 mt-2 w-40 bg-gray-800 border border-gray-700 rounded-md shadow-lg z-50">
                     {languages.map((lang) => (
@@ -138,37 +149,49 @@ const Navbar = () => {
             </span>
           </Link>
           
-          {/* Мобильный переключатель языка */}
-          <div className="relative">
-            <button
-              onClick={() => setShowLanguageMenu(!showLanguageMenu)}
-              className="flex items-center space-x-1 px-2 py-1 rounded-md text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-700 transition duration-300"
+          {/* Мобильный профиль и переключатель языка */}
+          <div className="flex items-center space-x-2">
+            <Link
+              to="/profile"
+              className={`flex items-center px-2 py-1 rounded-md transition duration-300 ${
+                isActive('/profile')
+                  ? 'text-purple-400 bg-gray-700'
+                  : 'text-gray-300 hover:text-white hover:bg-gray-700'
+              }`}
             >
-              <FaGlobe className="text-lg" />
-              <span className="text-lg">{currentLanguage?.flag}</span>
-            </button>
-            
-            {showLanguageMenu && (
-              <div className="absolute right-0 mt-2 w-36 bg-gray-800 border border-gray-700 rounded-md shadow-lg z-50">
-                {languages.map((lang) => (
-                  <button
-                    key={lang.code}
-                    onClick={() => {
-                      switchLanguage(lang.code);
-                      setShowLanguageMenu(false);
-                    }}
-                    className={`w-full text-left px-3 py-2 text-sm transition duration-300 flex items-center space-x-2 ${
-                      language === lang.code
-                        ? 'text-purple-400 bg-gray-700'
-                        : 'text-gray-300 hover:text-white hover:bg-gray-700'
-                    }`}
-                  >
-                    <span>{lang.flag}</span>
-                    <span>{lang.name}</span>
-                  </button>
-                ))}
-              </div>
-            )}
+              <FaUser className="text-lg" />
+            </Link>
+            <div className="relative">
+              <button
+                onClick={() => setShowLanguageMenu(!showLanguageMenu)}
+                className="flex items-center space-x-1 px-2 py-1 rounded-md text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-700 transition duration-300"
+              >
+                <FaGlobe className="text-lg" />
+                <span className="text-lg">{currentLanguage?.flag}</span>
+              </button>
+
+              {showLanguageMenu && (
+                <div className="absolute right-0 mt-2 w-36 bg-gray-800 border border-gray-700 rounded-md shadow-lg z-50">
+                  {languages.map((lang) => (
+                    <button
+                      key={lang.code}
+                      onClick={() => {
+                        switchLanguage(lang.code);
+                        setShowLanguageMenu(false);
+                      }}
+                      className={`w-full text-left px-3 py-2 text-sm transition duration-300 flex items-center space-x-2 ${
+                        language === lang.code
+                          ? 'text-purple-400 bg-gray-700'
+                          : 'text-gray-300 hover:text-white hover:bg-gray-700'
+                      }`}
+                    >
+                      <span>{lang.flag}</span>
+                      <span>{lang.name}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </header>

@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import CharacterCard from './CharacterCard';
-import characters from './data/characters';
 import { useTranslation } from './hooks/useTranslation';
 
 const Characters = () => {
@@ -8,6 +7,8 @@ const Characters = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [visibleCount, setVisibleCount] = useState(6);
   const [showArrow, setShowArrow] = useState(false);
+  const [characters, setCharacters] = useState([]);
+  const [loading, setLoading] = useState(true);
   const observer = useRef(null);
   const sentinelRef = useRef(null);
 
@@ -27,7 +28,33 @@ const Characters = () => {
     return character.description;
   };
 
-  const filteredCharacters = characters.filter(character => character.enabled !== false).filter(character => {
+  // Загрузка персонажей из API
+  const fetchCharacters = async () => {
+    try {
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8001';
+      const response = await fetch(`${apiUrl}/characters`);
+      const data = await response.json();
+      setCharacters(data);
+    } catch (error) {
+      console.error('Error fetching characters:', error);
+      // Fallback к локальным данным при ошибке API
+      try {
+        const charactersData = (await import('./data/characters')).default;
+        setCharacters(charactersData.filter(char => char.enabled));
+      } catch (fallbackErr) {
+        console.error('Fallback error:', fallbackErr);
+        setCharacters([]);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchCharacters();
+  }, []);
+
+  const filteredCharacters = characters.filter(character => character.enabled).filter(character => {
     const name = getCharacterName(character);
     const description = getCharacterDescription(character);
     return name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -77,6 +104,19 @@ const Characters = () => {
 
   const visibleCharacters = filteredCharacters.slice(0, visibleCount);
   const hasMore = visibleCount < filteredCharacters.length;
+
+  if (loading) {
+    return (
+      <div className="min-h-screen py-4">
+        <div className="container mx-auto px-4">
+          <div className="text-center py-8">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500 mx-auto"></div>
+            <p className="mt-4 text-gray-400">Загрузка персонажей...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen py-4">
