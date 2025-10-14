@@ -1,9 +1,9 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import SceneModal from './SceneModal';
 import { useTranslation } from './hooks/useTranslation';
 
-const CharacterCard = React.memo(({ character }) => {
+const CharacterCard = ({ character }) => {
   const { t, language } = useTranslation();
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -35,19 +35,8 @@ const CharacterCard = React.memo(({ character }) => {
     return character.description;
   };
 
-  const name = useMemo(() => {
-    if (typeof character.name === 'object') {
-      return character.name[language] || character.name.ru;
-    }
-    return character.name;
-  }, [character.name, language]);
-
-  const description = useMemo(() => {
-    if (typeof character.description === 'object') {
-      return character.description[language] || character.description.ru;
-    }
-    return character.description;
-  }, [character.description, language]);
+  const name = getName();
+  const description = getDescription();
 
   return (
     <>
@@ -99,13 +88,13 @@ const CharacterCard = React.memo(({ character }) => {
         </div>
       </div>
 
-      <SceneModal
+      <SceneModal 
         character={character}
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
       />
     </>
   );
-});
+};
 
 export default CharacterCard;

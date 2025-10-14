@@ -12,28 +12,6 @@
     background: linear-gradient(to bottom, #000000 0%, #0d0a12 40%, #1a0f1f 50%, #0d0a12 60%, #000000 100%);
     background-attachment: fixed;
     min-height: 100vh;
-
-    /* Performance optimizations */
-    backface-visibility: hidden;
-    -webkit-font-smoothing: antialiased;
-    transform: translateZ(0);
-    will-change: auto;
-  }
-
-  /* Optimize scrolling on mobile */
-  html {
-    scroll-behavior: smooth;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  /* Optimize animations */
-  * {
-    box-sizing: border-box;
-  }
-
-  img {
-    image-rendering: -webkit-optimize-contrast;
-    image-rendering: crisp-edges;
   }
 
   h1, h2, h3, h4, h5, h6 {
