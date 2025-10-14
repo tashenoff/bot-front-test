@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import scenes from './data/scenes';
 import { handleSceneSelection } from './utils/telegramUtils';
 import { useTranslation } from './hooks/useTranslation';
 
@@ -33,13 +32,30 @@ const SceneModal = ({ character, isOpen, onClose }) => {
   };
 
   useEffect(() => {
-    if (character && character.available_scenes) {
-      // Фильтруем сцены по available_scenes персонажа
-      const characterScenes = scenes.filter(scene =>
-        character.available_scenes.includes(scene.id)
-      );
-      setAvailableScenes(characterScenes);
-    }
+    const fetchCharacterScenes = async () => {
+      if (!character || !character.id) {
+        setAvailableScenes([]);
+        return;
+      }
+
+      try {
+        const apiUrl = import.meta.env.VITE_API_URL;
+        const response = await fetch(`${apiUrl}/characters/${character.id}/scenes`);
+        
+        if (response.ok) {
+          const characterScenes = await response.json();
+          setAvailableScenes(characterScenes);
+        } else {
+          console.error('Failed to fetch character scenes:', response.statusText);
+          setAvailableScenes([]);
+        }
+      } catch (error) {
+        console.error('Error fetching character scenes:', error);
+        setAvailableScenes([]);
+      }
+    };
+
+    fetchCharacterScenes();
   }, [character]);
 
   const handleSceneSelect = (scene) => {
