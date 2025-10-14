@@ -29,6 +29,15 @@ const CharacterCard = ({ character }) => {
   };
 
   const getDescription = () => {
+    // Сначала пытаемся получить short_description
+    const shortDesc = character.short_description;
+    if (shortDesc) {
+      if (typeof shortDesc === 'object') {
+        return shortDesc[language] || shortDesc.ru;
+      }
+      return shortDesc;
+    }
+    // Если short_description нет, используем description
     if (typeof character.description === 'object') {
       return character.description[language] || character.description.ru;
     }
@@ -68,7 +77,8 @@ const CharacterCard = ({ character }) => {
           )}
         </div>
         <div className="px-5 pt-3 pb-5 bg-gray-950/80 backdrop-blur-sm border-t border-gray-800/50">
-          <h3 className="text-base font-bold text-purple-400 tracking-wide mb-4">{name}</h3>
+          <h3 className="text-base font-bold text-purple-400 tracking-wide mb-2">{name}</h3>
+          <p className="text-gray-300 text-xs leading-relaxed mb-4 line-clamp-3">{description}</p>
           <button
             onClick={handleAboutCharacter}
             className="text-gray-400 hover:text-purple-400 transition-colors text-[10px] uppercase tracking-widest flex items-center justify-between w-full mb-4 border border-gray-600/30 hover:border-purple-400/50 rounded py-1.5 px-4"
