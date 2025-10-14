@@ -1,6 +1,7 @@
-import React, { Suspense, lazy } from 'react';
+import React, { Suspense, lazy, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { LanguageProvider } from './contexts/LanguageContext';
+import { enableMapSet } from './utils/performanceFixes';
 
 const Layout = lazy(() => import('./Layout'));
 const Help = lazy(() => import('./Help'));
