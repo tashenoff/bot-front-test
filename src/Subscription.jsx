@@ -33,34 +33,91 @@ const Subscription = () => {
     }
   }, []);
 
-  const handleSubscriptionSelect = (subscriptionType) => {
-    if (!chatId) {
-      alert(language === 'en' ? 'Error: Could not determine user' : 'Ошибка: не удалось определить пользователя');
-      return;
-    }
-
+  const handleSubscriptionSelect = async (subscriptionType) => {
     if (window.Telegram?.WebApp) {
       try {
         const tg = window.Telegram.WebApp;
-        const botUsername = import.meta.env.VITE_BOT_USERNAME || 'your_bot';
-        
-        // Создаем deep link для возврата в бота с информацией о подписке
-        const deepLink = `https://t.me/${botUsername}?start=subscription_${subscriptionType}_chat_${chatId}`;
-        
-        // Открываем deep link
-        tg.openTelegramLink(deepLink);
-        
-        // Закрываем webapp
-        setTimeout(() => {
-          tg.close();
-        }, 100);
-        
+
+        // Проверяем, что у нас есть chat_id
+        if (!chatId) {
+          throw new Error('Chat ID not available');
+        }
+
+        console.log('Creating subscription invoice for:', subscriptionType, 'chat:', chatId);
+
+        // Получаем ссылку на инвойс из API
+        const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8001';
+        const response = await fetch(`${apiUrl}/subscription/${subscriptionType}/invoice?chat_id=${chatId}`);
+
+        if (!response.ok) {
+          throw new Error('Не удалось создать инвойс подписки');
+        }
+
+        const invoiceData = await response.json();
+        console.log('Subscription invoice data:', invoiceData);
+
+        // Проверяем на ошибки
+        if (invoiceData.error) {
+          throw new Error(invoiceData.error);
+        }
+
+        // Получаем ссылку на инвойс
+        const invoiceLink = invoiceData.invoice_link;
+        if (!invoiceLink) {
+          throw new Error('Не удалось получить ссылку на инвойс');
+        }
+
+        console.log('Opening subscription invoice:', invoiceLink);
+
+        // Открываем инвойс через Telegram WebApp
+        tg.openInvoice(invoiceLink, (status) => {
+          console.log('Subscription payment status:', status);
+
+          if (status === 'paid') {
+            // Оплата успешна - показываем поздравление
+            const successMessage = language === 'en' ? 
+              `🎉 Payment successful! Premium subscription activated!` :
+              `🎉 Оплата прошла успешно! Премиум подписка активирована!`;
+            
+            // Показываем уведомление через Telegram
+            tg.showAlert(successMessage);
+            
+            // Закрываем WebApp через некоторое время
+            setTimeout(() => {
+              tg.close();
+            }, 2000);
+            
+          } else if (status === 'cancelled') {
+            // Оплата отменена
+            const cancelMessage = language === 'en' ? 'Payment cancelled' : 'Оплата отменена';
+            tg.showAlert(cancelMessage);
+          } else if (status === 'failed') {
+            // Оплата неуспешна
+            const failMessage = language === 'en' ? 'Payment failed' : 'Ошибка оплаты';
+            tg.showAlert(failMessage);
+          } else {
+            // Другие статусы
+            console.log('Unknown payment status:', status);
+          }
+        });
+
       } catch (error) {
-        console.error('Error selecting subscription:', error);
-        alert(language === 'en' ? `Error: ${error.message}` : `Ошибка: ${error.message}`);
+        console.error('Error purchasing subscription:', error);
+        const errorMessage = language === 'en' ? 
+          `Error: ${error.message}` : 
+          `Ошибка: ${error.message}`;
+        
+        if (window.Telegram?.WebApp) {
+          window.Telegram.WebApp.showAlert(errorMessage);
+        } else {
+          alert(errorMessage);
+        }
       }
     } else {
-      alert(language === 'en' ? 'Telegram WebApp not available' : 'Telegram WebApp не доступен');
+      const noWebAppMessage = language === 'en' ? 
+        'Telegram WebApp not available' : 
+        'Telegram WebApp не доступен';
+      alert(noWebAppMessage);
     }
   };
 
