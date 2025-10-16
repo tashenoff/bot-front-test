@@ -26,13 +26,13 @@ export const useAgeVerification = () => {
     console.log('🔰 handleAgeConfirmation вызван:', { isUserAdult });
     
     // Сохраняем выбор пользователя
-    // const status = isUserAdult ? 'adult' : 'minor';
-    // console.log('💾 Сохраняем в localStorage:', status);
-    // localStorage.setItem(AGE_VERIFICATION_KEY, status);
+    const status = isUserAdult ? 'adult' : 'minor';
+    console.log('💾 Сохраняем в localStorage:', status);
+    localStorage.setItem(AGE_VERIFICATION_KEY, status);
     
     // Проверяем что сохранилось
-    // const saved = localStorage.getItem(AGE_VERIFICATION_KEY);
-    // console.log('✅ Проверка localStorage после сохранения:', saved);
+    const saved = localStorage.getItem(AGE_VERIFICATION_KEY);
+    console.log('✅ Проверка localStorage после сохранения:', saved);
     
     // Обновляем состояние
     console.log('🔄 Обновляем состояние: isAdult =', isUserAdult);

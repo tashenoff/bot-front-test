@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from './hooks/useTranslation';
 import { extractUserIdFromTelegram } from './utils/telegramUtils';
+import { useAgeVerification } from './hooks/useAgeVerification';
 
 const Profile = () => {
   const { t } = useTranslation();
@@ -8,6 +9,9 @@ const Profile = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [userId, setUserId] = useState(null);
+  
+  // Возрастные ограничения
+  const { isAdult, includeAdultContent, handleAgeConfirmation, ageStatus } = useAgeVerification();
 
   // Извлекаем user_id из Telegram WebApp
   useEffect(() => {
@@ -187,6 +191,43 @@ const Profile = () => {
           </div>
         </div>
 
+        {/* Настройки контента */}
+        <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 mb-6">
+          <h2 className="text-xl font-bold text-white mb-4">Настройки контента</h2>
+          
+          <div className="space-y-4">
+            <div className="flex justify-between items-center">
+              <div className="flex-1">
+                <span className="text-white font-medium">Контент +18</span>
+                <p className="text-gray-300 text-sm mt-1">
+                  Показывать взрослый контент и сцены с возрастными ограничениями
+                </p>
+              </div>
+              <div className="ml-4">
+                <label className="relative inline-flex items-center cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={includeAdultContent}
+                    onChange={(e) => handleAgeConfirmation(e.target.checked)}
+                    className="sr-only peer"
+                  />
+                  <div className="w-11 h-6 bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
+                </label>
+              </div>
+            </div>
+            
+            <div className="flex justify-between items-center pt-2 border-t border-white/10">
+              <span className="text-gray-300">Текущий статус:</span>
+              <span className={`px-3 py-1 rounded-full text-sm font-medium ${
+                includeAdultContent 
+                  ? 'bg-orange-100 text-orange-800' 
+                  : 'bg-green-100 text-green-800'
+              }`}>
+                {includeAdultContent ? 'Все сцены доступны' : 'Только безопасный контент'}
+              </span>
+            </div>
+          </div>
+        </div>
 
         {/* Кнопка обновления */}
         <div className="text-center">
