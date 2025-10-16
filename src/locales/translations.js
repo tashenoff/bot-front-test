@@ -185,7 +185,17 @@ export const translations = {
     paymentStars: 'Оплата производится Telegram звездами',
     securePayment: 'Безопасная оплата через Telegram',
     instantActivation: 'Мгновенная активация подписки',
-    exclusiveCharactersPreview: 'Эксклюзивные персонажи'
+    exclusiveCharactersPreview: 'Эксклюзивные персонажи',
+    
+    // Age verification modal
+    ageVerification: {
+      title: 'Подтверждение возраста',
+      description: 'Некоторый контент может быть предназначен только для взрослых. Вам есть 18 лет?',
+      warning: 'Если вам меньше 18 лет, контент для взрослых будет скрыт.',
+      yes: 'Да, мне есть 18',
+      no: 'Нет, мне меньше 18',
+      footer: 'Ваш выбор сохранится в настройках браузера'
+    }
   },
   
   en: {
@@ -374,6 +384,16 @@ export const translations = {
     paymentStars: 'Payment is made with Telegram Stars',
     securePayment: 'Secure payment through Telegram',
     instantActivation: 'Instant subscription activation',
-    exclusiveCharactersPreview: 'Exclusive Characters'
+    exclusiveCharactersPreview: 'Exclusive Characters',
+    
+    // Age verification modal
+    ageVerification: {
+      title: 'Age Verification',
+      description: 'Some content may be intended for adults only. Are you 18 years old or older?',
+      warning: 'If you are under 18, adult content will be hidden.',
+      yes: 'Yes, I am 18+',
+      no: 'No, I am under 18',
+      footer: 'Your choice will be saved in browser settings'
+    }
   }
 };

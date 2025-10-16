@@ -5,7 +5,7 @@ import CharacterGallery from './CharacterGallery';
 import Footer from './Footer';
 import { handleSceneSelection } from './utils/telegramUtils';
 
-const SceneSelection = () => {
+const SceneSelection = ({ includeAdultContent = false }) => {
   const { characterId } = useParams();
   const navigate = useNavigate();
   const [character, setCharacter] = useState(null);
@@ -25,8 +25,9 @@ const SceneSelection = () => {
           const characterData = await characterResponse.json();
           setCharacter(characterData);
 
-          // Загружаем сцены персонажа
-          const scenesResponse = await fetch(`${apiUrl}/characters/${characterId}/scenes`);
+          // Загружаем сцены персонажа с учетом возрастных ограничений
+          const scenesUrl = `${apiUrl}/characters/${characterId}/scenes?include_adult_content=${includeAdultContent}`;
+          const scenesResponse = await fetch(scenesUrl);
           if (scenesResponse.ok) {
             const scenesData = await scenesResponse.json();
             setAvailableScenes(scenesData);
@@ -49,11 +50,16 @@ const SceneSelection = () => {
           if (selectedCharacter) {
             setCharacter(selectedCharacter);
             
-            // Фильтруем сцены по available_scenes персонажа
-            const characterScenes = scenes.filter(scene =>
-              selectedCharacter.available_scenes &&
-              selectedCharacter.available_scenes.includes(scene.id)
-            );
+            // Фильтруем сцены по available_scenes персонажа и возрастным ограничениям
+            const characterScenes = scenes.filter(scene => {
+              const isAvailable = selectedCharacter.available_scenes &&
+                selectedCharacter.available_scenes.includes(scene.id);
+              
+              // Если взрослый контент не разрешен, исключаем сцены с adult_content: true
+              const isAgeAppropriate = includeAdultContent || !scene.adult_content;
+              
+              return isAvailable && isAgeAppropriate;
+            });
             setAvailableScenes(characterScenes);
           }
         } catch (fallbackError) {
@@ -67,7 +73,7 @@ const SceneSelection = () => {
     };
 
     fetchCharacterData();
-  }, [characterId]);
+  }, [characterId, includeAdultContent]);
 
   useEffect(() => {
     const handleScroll = () => {
