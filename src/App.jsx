@@ -12,6 +12,7 @@ import AgeVerificationModal from './AgeVerificationModal';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { LanguageProvider } from './contexts/LanguageContext';
 import { useAgeVerification } from './hooks/useAgeVerification';
+import { AgeVerificationProvider } from './contexts/AgeVerificationContext';
 
 function AppContent() {
   const {
