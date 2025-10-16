@@ -79,7 +79,9 @@ function AppContent() {
 function App() {
   return (
     <LanguageProvider>
-      <AppContent />
+      <AgeVerificationProvider>
+        <AppContent />
+      </AgeVerificationProvider>
     </LanguageProvider>
   );
 }
