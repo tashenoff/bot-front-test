@@ -21,8 +21,16 @@ function AppContent() {
     includeAdultContent
   } = useAgeVerification();
 
+  console.log('🎯 AppContent: Состояние возрастной проверки:', {
+    showModal,
+    isLoading,
+    includeAdultContent,
+    localStorage: localStorage.getItem('ageVerificationStatus')
+  });
+
   // Показываем загрузку пока определяется статус возраста
   if (isLoading) {
+    console.log('⏳ AppContent: Показываем загрузку...');
     return (
       <div className="min-h-screen bg-gray-900 flex items-center justify-center">
         <div className="text-center">
@@ -32,6 +40,8 @@ function AppContent() {
       </div>
     );
   }
+
+  console.log('🚀 AppContent: Рендерим основное приложение с includeAdultContent =', includeAdultContent);
 
   return (
     <>
@@ -53,8 +63,14 @@ function AppContent() {
       {/* Модальное окно проверки возраста */}
       <AgeVerificationModal
         isOpen={showModal}
-        onConfirm={() => handleAgeConfirmation(true)}
-        onDecline={() => handleAgeConfirmation(false)}
+        onConfirm={() => {
+          console.log('🎯 App: Передаем handleAgeConfirmation(true) - пользователь взрослый');
+          handleAgeConfirmation(true);
+        }}
+        onDecline={() => {
+          console.log('🎯 App: Передаем handleAgeConfirmation(false) - пользователь несовершеннолетний');
+          handleAgeConfirmation(false);
+        }}
       />
     </>
   );

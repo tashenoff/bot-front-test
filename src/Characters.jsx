@@ -3,7 +3,7 @@ import CharacterCard from './CharacterCard';
 import { useTranslation } from './hooks/useTranslation';
 import { debounce, preloadImages } from './utils/performanceUtils';
 
-const Characters = () => {
+const Characters = ({ includeAdultContent = false }) => {
   const { t, language } = useTranslation();
   const [searchTerm, setSearchTerm] = useState('');
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
@@ -50,14 +50,7 @@ const Characters = () => {
       setCharacters(data);
     } catch (error) {
       console.error('Error fetching characters:', error);
-      // Fallback к локальным данным при ошибке API
-      try {
-        const charactersData = (await import('./data/characters')).default;
-        setCharacters(charactersData.filter(char => char.enabled));
-      } catch (fallbackErr) {
-        console.error('Fallback error:', fallbackErr);
-        setCharacters([]);
-      }
+      setCharacters([]);
     } finally {
       setLoading(false);
     }
@@ -190,6 +183,7 @@ const Characters = () => {
                   character={character}
                   getCharacterName={getCharacterName}
                   getCharacterDescription={getCharacterDescription}
+                  includeAdultContent={includeAdultContent}
                 />
               ))}
             </div>

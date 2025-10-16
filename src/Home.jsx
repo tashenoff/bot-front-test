@@ -27,16 +27,7 @@ const Home = () => {
         setCharacters(data);
       } catch (error) {
         console.error('Error fetching characters:', error);
-        // Fallback к локальным данным при ошибке API
-        try {
-          const module = await import('./data/characters.js');
-          const allCharacters = module.default;
-          const filtered = allCharacters.filter(character => character.enabled !== false);
-          setCharacters(filtered);
-        } catch (fallbackError) {
-          console.error('Fallback error:', fallbackError);
-          setCharacters([]);
-        }
+        setCharacters([]);
       }
     };
 

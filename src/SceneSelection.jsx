@@ -16,6 +16,12 @@ const SceneSelection = ({ includeAdultContent = false }) => {
 
   useEffect(() => {
     const fetchCharacterData = async () => {
+      console.log('🔍 SceneSelection Debug Info:', {
+        characterId,
+        includeAdultContent,
+        apiUrl: import.meta.env.VITE_API_URL
+      });
+
       try {
         const apiUrl = import.meta.env.VITE_API_URL;
         
@@ -27,46 +33,26 @@ const SceneSelection = ({ includeAdultContent = false }) => {
 
           // Загружаем сцены персонажа с учетом возрастных ограничений
           const scenesUrl = `${apiUrl}/characters/${characterId}/scenes?include_adult_content=${includeAdultContent}`;
+          console.log('🌐 Запрос сцен:', scenesUrl);
+          
           const scenesResponse = await fetch(scenesUrl);
           if (scenesResponse.ok) {
             const scenesData = await scenesResponse.json();
+            console.log('✅ Получены сцены из API:', scenesData.length, 'сцен');
+            console.log('📋 Список сцен:', scenesData.map(s => `${s.id}: ${s.name}`));
             setAvailableScenes(scenesData);
           } else {
-            console.error('Failed to fetch character scenes');
+            console.error('❌ Failed to fetch character scenes, status:', scenesResponse.status);
             setAvailableScenes([]);
           }
         } else {
-          console.error('Failed to fetch character data');
+          console.error('❌ Failed to fetch character data, status:', characterResponse.status);
           setCharacter(null);
         }
       } catch (error) {
-        console.error('Error fetching character data:', error);
-        // Fallback к локальным данным при ошибке API
-        try {
-          const { default: characters } = await import('./data/characters');
-          const { default: scenes } = await import('./data/scenes');
-          
-          const selectedCharacter = characters.find(char => char.id === characterId);
-          if (selectedCharacter) {
-            setCharacter(selectedCharacter);
-            
-            // Фильтруем сцены по available_scenes персонажа и возрастным ограничениям
-            const characterScenes = scenes.filter(scene => {
-              const isAvailable = selectedCharacter.available_scenes &&
-                selectedCharacter.available_scenes.includes(scene.id);
-              
-              // Если взрослый контент не разрешен, исключаем сцены с adult_content: true
-              const isAgeAppropriate = includeAdultContent || !scene.adult_content;
-              
-              return isAvailable && isAgeAppropriate;
-            });
-            setAvailableScenes(characterScenes);
-          }
-        } catch (fallbackError) {
-          console.error('Fallback error:', fallbackError);
-          setCharacter(null);
-          setAvailableScenes([]);
-        }
+        console.error('🚨 API Error:', error);
+        setCharacter(null);
+        setAvailableScenes([]);
       } finally {
         setLoading(false);
       }

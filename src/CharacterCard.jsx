@@ -4,7 +4,7 @@ import SceneModal from './SceneModal';
 import LazyImage from './components/LazyImage';
 import { useTranslation } from './hooks/useTranslation';
 
-const CharacterCard = memo(({ character, getCharacterName, getCharacterDescription }) => {
+const CharacterCard = memo(({ character, getCharacterName, getCharacterDescription, includeAdultContent = false }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -87,6 +87,7 @@ const CharacterCard = memo(({ character, getCharacterName, getCharacterDescripti
         character={character}
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
+        includeAdultContent={includeAdultContent}
       />
     </>
   );

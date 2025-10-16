@@ -69,7 +69,7 @@ const SkeletonLoader = memo(() => (
   </div>
 ));
 
-const CharacterPage = () => {
+const CharacterPage = ({ includeAdultContent = false }) => {
   const { characterId } = useParams();
   const navigate = useNavigate();
   const [character, setCharacter] = useState(null);
@@ -141,7 +141,7 @@ const CharacterPage = () => {
 
   // Оптимизированная загрузка данных с кэшированием
   const fetchCharacterData = useCallback(async () => {
-    const cacheKey = `character_${characterId}`;
+    const cacheKey = `character_${characterId}_adult_${includeAdultContent}`;
     const cached = getCachedData(cacheKey);
     
     if (cached) {
@@ -152,15 +152,27 @@ const CharacterPage = () => {
     }
 
     try {
+      console.log('🔍 CharacterPage Debug Info:', {
+        characterId,
+        includeAdultContent,
+        apiUrl
+      });
+
       // Параллельная загрузка персонажа и сцен
+      const scenesUrl = `${apiUrl}/characters/${characterId}/scenes?include_adult_content=${includeAdultContent}`;
+      console.log('🌐 Запрос сцен:', scenesUrl);
+      
       const [characterResponse, scenesResponse] = await Promise.all([
         fetch(`${apiUrl}/characters/${characterId}`),
-        fetch(`${apiUrl}/characters/${characterId}/scenes`)
+        fetch(scenesUrl)
       ]);
       
       if (characterResponse.ok) {
         const characterData = await characterResponse.json();
         const scenesData = scenesResponse.ok ? await scenesResponse.json() : [];
+        
+        console.log('✅ Получены сцены из API:', scenesData.length, 'сцен');
+        console.log('📋 Список сцен:', scenesData.map(s => `${s.id}: ${s.name}`));
         
         setCharacter(characterData);
         setAvailableScenes(scenesData);
@@ -174,54 +186,12 @@ const CharacterPage = () => {
         throw new Error(`API Error: ${characterResponse.status}`);
       }
     } catch (error) {
-      console.warn('API Error, falling back to local data:', error.message);
-      
-      // Fallback к локальным данным с кэшированием импорта
-      try {
-        let localCharacters, localScenes;
-        
-        const localCacheKey = 'local_data';
-        const localCached = getCachedData(localCacheKey);
-        
-        if (localCached) {
-          localCharacters = localCached.characters;
-          localScenes = localCached.scenes;
-        } else {
-          // Динамический импорт только при первой необходимости
-          const [{ default: characters }, { default: scenes }] = await Promise.all([
-            import('./data/characters'),
-            import('./data/scenes')
-          ]);
-          
-          localCharacters = characters;
-          localScenes = scenes;
-          
-          setCachedData(localCacheKey, {
-            characters: localCharacters,
-            scenes: localScenes
-          });
-        }
-        
-        const selectedCharacter = localCharacters.find(char => char.id === characterId);
-        if (selectedCharacter) {
-          setCharacter(selectedCharacter);
-          
-          // Фильтруем сцены
-          const characterScenes = selectedCharacter.available_scenes
-            ? localScenes.filter(scene => selectedCharacter.available_scenes.includes(scene.id))
-            : [];
-          
-          setAvailableScenes(characterScenes);
-        } else {
-          setError('Персонаж не найден');
-        }
-      } catch (fallbackError) {
-        setError(`Ошибка загрузки данных: ${fallbackError.message}`);
-      }
+      console.error('API Error:', error.message);
+      setError(`Ошибка загрузки данных: ${error.message}`);
     } finally {
       setLoading(false);
     }
-  }, [characterId, apiUrl, getCachedData, setCachedData]);
+  }, [characterId, includeAdultContent, apiUrl, getCachedData, setCachedData]);
 
   useEffect(() => {
     fetchCharacterData();

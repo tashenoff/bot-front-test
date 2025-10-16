@@ -6,15 +6,19 @@ const AgeVerificationModal = ({ isOpen, onConfirm, onDecline }) => {
   const [isAnimating, setIsAnimating] = useState(false);
 
   const handleConfirm = () => {
+    console.log('✅ AgeVerificationModal: Пользователь нажал "Да, мне есть 18"');
     setIsAnimating(true);
     setTimeout(() => {
+      console.log('✅ AgeVerificationModal: Вызываем onConfirm() для взрослого');
       onConfirm();
     }, 300);
   };
 
   const handleDecline = () => {
+    console.log('❌ AgeVerificationModal: Пользователь нажал "Нет, мне меньше 18"');
     setIsAnimating(true);
     setTimeout(() => {
+      console.log('❌ AgeVerificationModal: Вызываем onDecline() для несовершеннолетнего');
       onDecline();
     }, 300);
   };
@@ -47,12 +51,12 @@ const AgeVerificationModal = ({ isOpen, onConfirm, onDecline }) => {
 
           {/* Title */}
           <h2 className="text-2xl font-bold text-white text-center mb-4">
-            {t('ageVerification.title', 'Подтверждение возраста')}
+            Подтверждение возраста
           </h2>
 
           {/* Description */}
           <p className="text-gray-300 text-center mb-6 leading-relaxed">
-            {t('ageVerification.description', 'Некоторый контент может быть предназначен только для взрослых. Вам есть 18 лет?')}
+            Некоторый контент может быть предназначен только для взрослых. Вам есть 18 лет?
           </p>
 
           {/* Warning */}
@@ -62,7 +66,7 @@ const AgeVerificationModal = ({ isOpen, onConfirm, onDecline }) => {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
               </svg>
               <p className="text-yellow-300 text-sm">
-                {t('ageVerification.warning', 'Если вам меньше 18 лет, контент для взрослых будет скрыт.')}
+                Если вам меньше 18 лет, контент для взрослых будет скрыт.
               </p>
             </div>
           </div>
@@ -73,20 +77,20 @@ const AgeVerificationModal = ({ isOpen, onConfirm, onDecline }) => {
               onClick={handleConfirm}
               className="flex-1 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-500/50"
             >
-              {t('ageVerification.yes', 'Да, мне есть 18')}
+              Да, мне есть 18
             </button>
             
             <button
               onClick={handleDecline}
               className="flex-1 bg-gradient-to-r from-gray-600 to-gray-700 hover:from-gray-700 hover:to-gray-800 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-gray-500/50"
             >
-              {t('ageVerification.no', 'Нет, мне меньше 18')}
+              Нет, мне меньше 18
             </button>
           </div>
 
           {/* Footer */}
           <p className="text-gray-400 text-xs text-center mt-4">
-            {t('ageVerification.footer', 'Ваш выбор сохранится в настройках браузера')}
+            Ваш выбор сохранится в настройках браузера
           </p>
         </div>
       </div>

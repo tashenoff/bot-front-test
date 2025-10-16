@@ -60,15 +60,7 @@ const Gifts = () => {
     } catch (err) {
       console.error('Error loading gifts:', err);
       setError(err.message);
-
-      // Fallback к локальным данным при ошибке API
-      try {
-        const giftsData = (await import('./data/gifts')).default;
-        setGifts(giftsData);
-      } catch (fallbackErr) {
-        console.error('Fallback error:', fallbackErr);
-        setGifts([]);
-      }
+      setGifts([]);
     } finally {
       setIsLoading(false);
     }

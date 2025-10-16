@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { handleSceneSelection } from './utils/telegramUtils';
 import { useTranslation } from './hooks/useTranslation';
 
-const SceneModal = ({ character, isOpen, onClose }) => {
+const SceneModal = ({ character, isOpen, onClose, includeAdultContent = false }) => {
   const { t, language } = useTranslation();
   const [availableScenes, setAvailableScenes] = useState([]);
   const [loadedImages, setLoadedImages] = useState({});
@@ -38,25 +38,36 @@ const SceneModal = ({ character, isOpen, onClose }) => {
         return;
       }
 
+      console.log('🔍 SceneModal Debug Info:', {
+        characterId: character.id,
+        includeAdultContent,
+        apiUrl: import.meta.env.VITE_API_URL
+      });
+
       try {
         const apiUrl = import.meta.env.VITE_API_URL;
-        const response = await fetch(`${apiUrl}/characters/${character.id}/scenes`);
+        const scenesUrl = `${apiUrl}/characters/${character.id}/scenes?include_adult_content=${includeAdultContent}`;
+        console.log('🌐 Запрос сцен:', scenesUrl);
+        
+        const response = await fetch(scenesUrl);
         
         if (response.ok) {
           const characterScenes = await response.json();
+          console.log('✅ Получены сцены из API:', characterScenes.length, 'сцен');
+          console.log('📋 Список сцен:', characterScenes.map(s => `${s.id}: ${s.name}`));
           setAvailableScenes(characterScenes);
         } else {
-          console.error('Failed to fetch character scenes:', response.statusText);
+          console.error('❌ Failed to fetch character scenes, status:', response.status);
           setAvailableScenes([]);
         }
       } catch (error) {
-        console.error('Error fetching character scenes:', error);
+        console.error('🚨 API Error:', error);
         setAvailableScenes([]);
       }
     };
 
     fetchCharacterScenes();
-  }, [character]);
+  }, [character, includeAdultContent]);
 
   const handleSceneSelect = (scene) => {
     if (!character) return;
