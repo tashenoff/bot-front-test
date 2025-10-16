@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from './hooks/useTranslation';
+import LoadingButton from './components/LoadingButton';
 
 const Subscription = () => {
   const { language } = useTranslation();
   const [chatId, setChatId] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     // Инициализация Telegram WebApp
@@ -156,12 +158,21 @@ const Subscription = () => {
               </div>
               
               {/* Кнопка подписки */}
-              <button
-                className="bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white font-semibold py-4 px-10 rounded-2xl transition-all transform hover:scale-105 shadow-lg shadow-purple-500/50 text-base"
-                onClick={() => handleSubscriptionSelect('monthly')}
+              <LoadingButton
+                className="py-4 px-10 rounded-2xl transform hover:scale-105 shadow-lg shadow-purple-500/50 text-base"
+                isLoading={isLoading}
+                onClick={async () => {
+                  setIsLoading(true);
+                  try {
+                    await handleSubscriptionSelect('monthly');
+                  } finally {
+                    setIsLoading(false);
+                  }
+                }}
+                language={language}
               >
                 {language === 'en' ? 'Subscribe now' : 'Подписаться сейчас'}
-              </button>
+              </LoadingButton>
             </div>
           </div>
         </div>

@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from './hooks/useTranslation';
+import LoadingButton from './components/LoadingButton';
 
 const GiftCard = ({ gift, showBuyButton = false, onSelect }) => {
   const { language } = useTranslation();
+  const [isLoading, setIsLoading] = useState(false);
 
   // Функции для получения локализованных данных
   const getGiftName = () => {
@@ -44,12 +46,21 @@ const GiftCard = ({ gift, showBuyButton = false, onSelect }) => {
           {gift.crystal_price} 💎
         </div>
         {showBuyButton && (
-          <button 
-            className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-bold py-2 px-4 rounded-lg transition-all"
-            onClick={() => onSelect && onSelect(gift.id)}
+          <LoadingButton 
+            className="w-full"
+            isLoading={isLoading}
+            onClick={async () => {
+              setIsLoading(true);
+              try {
+                await onSelect(gift.id);
+              } finally {
+                setIsLoading(false);
+              }
+            }}
+            language={language}
           >
             {language === 'en' ? 'Gift' : 'Подарить'}
-          </button>
+          </LoadingButton>
         )}
       </div>
     </div>
