@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from './hooks/useTranslation';
+import LoadingButton from './components/LoadingButton';
 
 const CrystalCard = ({ crystal, showBuyButton = false, onSelect }) => {
   const { language } = useTranslation();
+  const [isLoading, setIsLoading] = useState(false);
 
   const getCrystalName = () => {
     return crystal.name;
@@ -78,23 +80,24 @@ const CrystalCard = ({ crystal, showBuyButton = false, onSelect }) => {
         </div>
         
         {/* КНОПКА ПОКУПКИ - ВСЕГДА ВИДИМАЯ */}
-        <button 
-          className="w-full bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white font-bold py-4 px-4 rounded-lg transition-all transform hover:scale-105 shadow-lg border-2 border-white"
-          onClick={() => {
+        <LoadingButton
+          className="w-full py-4 px-4 rounded-lg transform hover:scale-105 shadow-lg border-2 border-white uppercase tracking-wider text-sm font-bold from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600"
+          isLoading={isLoading}
+          onClick={async () => {
             console.log('🎯 Button clicked for crystal:', crystal.id);
-            if (onSelect) {
-              onSelect(crystal.id);
+            setIsLoading(true);
+            try {
+              if (onSelect) {
+                await onSelect(crystal.id);
+              }
+            } finally {
+              setIsLoading(false);
             }
           }}
-          style={{
-            fontSize: '14px',
-            fontWeight: 'bold',
-            textTransform: 'uppercase',
-            letterSpacing: '1px'
-          }}
+          language={language}
         >
           🔥 {language === 'en' ? 'BUY NOW!' : 'КУПИТЬ СЕЙЧАС!'}
-        </button>
+        </LoadingButton>
       </div>
     </div>
   );
