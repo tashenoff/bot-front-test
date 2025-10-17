@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import GiftCard from './GiftCard';
-import CrystalCard from './CrystalCard';
+import CrystalPackCard from './components/CrystalPackCard';
 import { useTranslation } from './hooks/useTranslation';
 
 const Gifts = () => {
@@ -295,10 +295,9 @@ const Gifts = () => {
                 />
               ))
             : crystals.map(crystal => (
-                <CrystalCard 
+                <CrystalPackCard 
                   key={crystal.id} 
                   crystal={crystal} 
-                  showBuyButton={true}
                   onSelect={handleCrystalSelect}
                 />
               ))
