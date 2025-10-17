@@ -30,7 +30,7 @@ const CharacterCard = memo(({ character, getCharacterName, getCharacterDescripti
 
   // Используем переданные мемоизированные функции
   const name = getCharacterName ? getCharacterName(character) : character.name;
-  const description = getCharacterDescription ? getCharacterDescription(character) : character.description;
+  const description = getCharacterDescription ? getCharacterDescription(character) : (character.short_description || character.description);
 
   return (
     <>
