@@ -82,6 +82,16 @@ const CrystalPackCard = ({ crystal, onSelect }) => {
               <span>💎</span>
               <span>{language === 'en' ? 'crystals' : 'кристаллов'}</span>
             </div>
+            
+            {/* Цена */}
+            <div className="mt-3">
+              <div className="text-yellow-400 font-bold text-lg">
+                {crystal.price} ⭐
+              </div>
+              <div className="text-xs text-white/60">
+                ≈ {(crystal.price / crystal.crystal_amount).toFixed(2)} ⭐/{language === 'en' ? 'msg' : 'сообщ'}
+              </div>
+            </div>
           </div>
           
           {/* Кнопка покупки */}
