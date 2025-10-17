@@ -55,22 +55,15 @@ const CrystalPackCard = ({ crystal, onSelect }) => {
         bg-gradient-to-br ${config.gradient}
         ${config.borderColor} border-2
         shadow-2xl ${config.glowColor}
-        hover:shadow-3xl hover:${config.glowColor}
-        transform hover:scale-105 hover:-translate-y-2
-        transition-all duration-300 ease-out
-        min-h-[280px] w-full max-w-[200px] mx-auto
-        group cursor-pointer
+        min-h-[280px] w-full mx-auto
       `}>
-        
-        {/* Анимированный фон */}
-        <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
         
         {/* Основной контент */}
         <div className="relative z-10 p-6 flex flex-col h-full">
           
           {/* Иконка */}
           <div className="flex justify-center mb-4">
-            <div className="text-6xl transform group-hover:scale-110 transition-transform duration-300">
+            <div className="text-6xl">
               {config.icon}
             </div>
           </div>
@@ -95,11 +88,9 @@ const CrystalPackCard = ({ crystal, onSelect }) => {
           <LoadingButton
             className={`
               w-full py-3 px-4 rounded-xl
-              bg-red-500 hover:bg-red-600
+              bg-red-500
               text-white font-bold text-sm uppercase tracking-wider
-              transform hover:scale-105 active:scale-95
-              transition-all duration-200
-              shadow-lg hover:shadow-xl
+              shadow-lg
               border-2 border-white/20
             `}
             isLoading={isLoading}
