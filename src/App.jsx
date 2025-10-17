@@ -6,6 +6,7 @@ import Characters from './Characters';
 import SceneSelection from './SceneSelection';
 import CharacterPage from './CharacterPage';
 import Gifts from './Gifts';
+import Crystals from './Crystals';
 import Subscription from './Subscription';
 import Profile from './Profile';
 import AgeVerificationModal from './AgeVerificationModal';
@@ -55,6 +56,7 @@ function AppContent() {
             <Route path="/character/:characterId" element={<CharacterPage includeAdultContent={includeAdultContent} />} />
             <Route path="/character/:characterId/scenes" element={<SceneSelection includeAdultContent={includeAdultContent} />} />
             <Route path="/gifts" element={<Gifts />} />
+            <Route path="/crystals" element={<Crystals />} />
             <Route path="/subscription" element={<Subscription />} />
             <Route path="/profile" element={<Profile />} />
           </Routes>

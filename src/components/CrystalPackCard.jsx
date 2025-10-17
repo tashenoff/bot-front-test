@@ -6,123 +6,94 @@ const CrystalPackCard = ({ crystal, onSelect }) => {
   const { language } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
 
-  // Определяем иконку и цвета в зависимости от пакета
-  const getPackageConfig = () => {
+  // Определяем иконку в зависимости от пакета
+  const getPackageIcon = () => {
     const amount = crystal.crystal_amount;
-    
+
     if (amount <= 100) {
-      return {
-        icon: '⚡',
-        name: language === 'en' ? 'Starter Pack' : 'Starter Pack',
-        gradient: 'from-blue-600 to-cyan-500',
-        glowColor: 'shadow-blue-500/30',
-        borderColor: 'border-blue-400'
-      };
+      return '📦';
+    } else if (amount <= 200) {
+      return '🎁';
     } else if (amount <= 500) {
-      return {
-        icon: '💎',
-        name: language === 'en' ? 'Premium Pack' : 'Premium Pack',
-        gradient: 'from-purple-600 to-pink-500',
-        glowColor: 'shadow-purple-500/30',
-        borderColor: 'border-purple-400'
-      };
-    } else if (amount <= 1000) {
-      return {
-        icon: '⭐',
-        name: language === 'en' ? 'Ultimate Pack' : 'Ultimate Pack',
-        gradient: 'from-yellow-500 to-orange-500',
-        glowColor: 'shadow-yellow-500/30',
-        borderColor: 'border-yellow-400'
-      };
+      return '💎';
     } else {
-      return {
-        icon: '🎁',
-        name: language === 'en' ? 'Crystal Pack' : 'Crystal Pack',
-        gradient: 'from-red-500 to-pink-500',
-        glowColor: 'shadow-red-500/30',
-        borderColor: 'border-red-400'
-      };
+      return '👑';
     }
   };
 
-  const config = getPackageConfig();
+  const icon = getPackageIcon();
 
   return (
-    <div className="relative">
-      
-      <div className={`
-        relative overflow-hidden rounded-2xl 
-        bg-gradient-to-br ${config.gradient}
-        ${config.borderColor} border-2
-        shadow-2xl ${config.glowColor}
-        min-h-[280px] w-full mx-auto
-      `}>
-        
-        {/* Основной контент */}
-        <div className="relative z-10 p-6 flex flex-col h-full">
-          
-          {/* Иконка */}
-          <div className="flex justify-center mb-4">
-            <div className="text-6xl">
-              {config.icon}
-            </div>
-          </div>
-          
-          {/* Название пакета */}
-          <h3 className="text-white text-lg font-bold text-center mb-2">
-            {config.name}
-          </h3>
-          
-          {/* Количество кристаллов */}
-          <div className="text-center mb-4 flex-grow flex flex-col justify-center">
-            <div className="text-3xl font-bold text-white mb-1">
-              {crystal.crystal_amount}
-            </div>
-            <div className="text-white/80 text-sm flex items-center justify-center gap-1">
-              <span>💎</span>
-              <span>{language === 'en' ? 'crystals' : 'кристаллов'}</span>
-            </div>
-            
-            {/* Цена */}
-            <div className="mt-3">
-              <div className="text-yellow-400 font-bold text-lg">
-                {crystal.price} ⭐
+    <div className="w-full">
+      <div className="bg-gray-800 rounded-lg border border-gray-700 hover:border-gray-600 transition-colors duration-200">
+        <div className="p-4 flex items-center justify-between">
+
+          {/* Левая часть - иконка и название */}
+          <div className="flex flex-col items-start">
+
+
+            <div className="flex w-full justify-between items-start mt-2">
+
+              <div className="flex">
+                {/* Иконка */}
+                <div className="w-12 h-12 bg-purple-600 rounded-lg flex items-center justify-center">
+                  <span className="text-white text-xl">{icon}</span>
+                </div>
+                <h3 className="text-white font-semibold ml-2 text-sm">
+                  {crystal.name}
+                </h3>
+
               </div>
-              <div className="text-xs text-white/60">
-                ≈ {(crystal.price / crystal.crystal_amount).toFixed(2)} ⭐/{language === 'en' ? 'msg' : 'сообщ'}
+
+
+              <div className="flex items-center space-x-3">
+                <div className="flex items-center space-x-2 bg-yellow-600 px-2 py-1 rounded">
+                  <span className="text-black font-bold text-sm">{crystal.price}</span>
+                  <span className="text-black text-sm">⭐</span>
+                </div>
+
+
+                <div className="bg-blue-600 px-3 py-1 rounded text-white font-semibold text-sm">
+                  ${(crystal.price * 0.1).toFixed(2)}
+                </div>
               </div>
             </div>
+
+            <div className="flex items-start mt-1">
+              <div className="flex items-center">
+                <span className="text-blue-400 text-sm"> {language === 'en' ? 'Buy' : 'Включает в себя:'}</span>
+
+              </div>
+              <div className="flex items-center space-x-1">
+                <span className="text-blue-400 text-sm">💎</span>
+                <span className="text-blue-400 font-semibold text-sm">{crystal.crystal_amount}</span>
+              </div>
+            </div>
           </div>
-          
-          {/* Кнопка покупки */}
-          <LoadingButton
-            className={`
-              w-full py-3 px-4 rounded-xl
-              bg-red-500
-              text-white font-bold text-sm uppercase tracking-wider
-              shadow-lg
-              border-2 border-white/20
-            `}
-            isLoading={isLoading}
-            onClick={async () => {
-              setIsLoading(true);
-              try {
-                if (onSelect) {
-                  await onSelect(crystal.id);
-                }
-              } finally {
-                setIsLoading(false);
-              }
-            }}
-            language={language}
-          >
-            {language === 'en' ? 'BUY' : 'КУПИТЬ'}
-          </LoadingButton>
+
+
         </div>
-        
-        {/* Декоративные элементы */}
-        <div className="absolute top-2 left-2 w-8 h-8 bg-white/10 rounded-full blur-sm"></div>
-        <div className="absolute bottom-4 right-2 w-6 h-6 bg-white/5 rounded-full blur-sm"></div>
+
+        {/* Кнопка покупки - опциональная, можно добавить при необходимости */}
+        {onSelect && (
+          <div className="px-4 pb-4">
+            <LoadingButton
+              className="w-full py-2 px-4 rounded bg-purple-600 hover:bg-purple-700 text-white font-semibold text-sm transition-colors duration-200"
+              isLoading={isLoading}
+              onClick={async () => {
+                setIsLoading(true);
+                try {
+                  await onSelect(crystal.id);
+                } finally {
+                  setIsLoading(false);
+                }
+              }}
+              language={language}
+            >
+              {language === 'en' ? 'Buy' : 'Купить'}
+            </LoadingButton>
+          </div>
+        )}
       </div>
     </div>
   );

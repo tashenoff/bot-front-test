@@ -87,7 +87,7 @@ const Navbar = () => {
   };
 
   const handleCrystalClick = () => {
-    navigate('/gifts');
+    navigate('/crystals');
   };
 
   const isActive = (path) => {
