@@ -20,7 +20,7 @@ const PromoBar = () => {
         <span className="mr-2">
           {language === 'en' ? 'Special offer: Premium for' : 'Специальная акция: Премиум за'}
         </span>
-        <span className="text-yellow-300 font-semibold mr-2">1 ⭐</span>
+        <span className="text-yellow-300 font-semibold mr-2">100 ⭐</span>
         <span className="text-white">→</span>
       </div>
     </div>
