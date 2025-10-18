@@ -176,7 +176,7 @@ const Characters = ({ includeAdultContent = false }) => {
           </div>
         ) : (
           <>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 gap-3">
               {visibleCharacters.map(character => (
                 <CharacterCard 
                   key={character.id} 
