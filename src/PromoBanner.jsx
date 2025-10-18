@@ -38,10 +38,10 @@ const PromoBanner = () => {
             {/* Цены */}
             <div className="flex items-center justify-center md:justify-start gap-4 mb-4">
               <div className="text-5xl font-bold text-yellow-300">
-                1 ⭐
+                100 ⭐
               </div>
               <div className="text-2xl text-gray-300 line-through opacity-75">
-                199 ⭐
+                500  ⭐
               </div>
             </div>
             
