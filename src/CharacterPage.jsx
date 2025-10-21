@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo, useCallback, memo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { handleSceneSelection } from './utils/telegramUtils';
 import LazyImage from './components/LazyImage';
+import ClothingSelector from './components/ClothingSelector';
 
 // Кэш для данных персонажей и сцен
 const dataCache = new Map();
@@ -79,6 +80,15 @@ const CharacterPage = ({ includeAdultContent = false }) => {
   
   const botUsername = import.meta.env.VITE_BOT_USERNAME || 'test_bot';
   const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8001';
+
+  // Получение userId из Telegram WebApp
+  const userId = useMemo(() => {
+    if (typeof window !== 'undefined' && window.Telegram?.WebApp?.initDataUnsafe?.user?.id) {
+      return window.Telegram.WebApp.initDataUnsafe.user.id;
+    }
+    // Fallback для тестирования
+    return parseInt(localStorage.getItem('test_user_id')) || 123456;
+  }, []);
 
   // Мемоизированная функция для получения URL изображения
   const getImageUrl = useCallback((imagePath) => {
@@ -268,6 +278,13 @@ const CharacterPage = ({ includeAdultContent = false }) => {
 
         {/* Интересы */}
         <InterestsGrid interests={characterInterests} />
+
+        {/* Гардероб персонажа */}
+        <ClothingSelector 
+          characterId={characterId}
+          userId={userId}
+          botUsername={botUsername}
+        />
 
         {/* Доступные сцены */}
         <div className="mb-8">
