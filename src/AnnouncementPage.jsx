@@ -82,6 +82,15 @@ const AnnouncementPage = () => {
         <div className="max-w-4xl mx-auto">
           {/* Hero Section */}
           <div className="text-center mb-12">
+            {/* Banner Image */}
+            <div className="mb-8">
+              <img 
+                src="/images/banner_help.jpeg" 
+                alt="Banner Help" 
+                className="mx-auto max-w-full h-auto rounded-xl shadow-2xl"
+              />
+            </div>
+            
             <h1 className="text-2xl md:text-4xl font-bold text-white mb-6 bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
               {content.title}
             </h1>
