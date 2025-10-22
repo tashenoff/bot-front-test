@@ -10,6 +10,7 @@ import Crystals from './Crystals';
 import Subscription from './Subscription';
 import Profile from './Profile';
 import AgeVerificationModal from './AgeVerificationModal';
+import AnnouncementPage from './AnnouncementPage';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { LanguageProvider } from './contexts/LanguageContext';
 import { useAgeVerification } from './hooks/useAgeVerification';
@@ -50,7 +51,7 @@ function AppContent() {
       <BrowserRouter>
         <Layout>
           <Routes>
-            <Route path="/" element={<Navigate to="/characters" replace />} />
+            <Route path="/" element={<Home includeAdultContent={includeAdultContent} />} />
             <Route path="/help" element={<Help />} />
             <Route path="/characters" element={<Characters includeAdultContent={includeAdultContent} />} />
             <Route path="/character/:characterId" element={<CharacterPage includeAdultContent={includeAdultContent} />} />
@@ -59,6 +60,7 @@ function AppContent() {
             <Route path="/crystals" element={<Crystals />} />
             <Route path="/subscription" element={<Subscription />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/announcement/:id" element={<AnnouncementPage />} />
           </Routes>
         </Layout>
       </BrowserRouter>

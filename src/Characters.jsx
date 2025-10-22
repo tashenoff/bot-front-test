@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import CharacterCard from './CharacterCard';
+import PromoBanner from './PromoBanner';
 import { useTranslation } from './hooks/useTranslation';
 import { debounce, preloadImages } from './utils/performanceUtils';
 
@@ -154,6 +155,9 @@ const Characters = ({ includeAdultContent = false }) => {
   return (
     <div className="min-h-screen py-4">
       <div className="container mx-auto px-4">
+        {/* Промо-банер для анонсов */}
+        <PromoBanner />
+        
         <h1 className="text-2xl font-bold text-center text-purple-400 mb-4">{t('allCharacters')}</h1>
         <div className="mb-4 relative">
           <svg className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
