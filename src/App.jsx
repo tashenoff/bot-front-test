@@ -51,7 +51,8 @@ function AppContent() {
       <BrowserRouter>
         <Layout>
           <Routes>
-            <Route path="/" element={<Home includeAdultContent={includeAdultContent} />} />
+            <Route path="/" element={<Characters includeAdultContent={includeAdultContent} />} />
+            <Route path="/home" element={<Home includeAdultContent={includeAdultContent} />} />
             <Route path="/help" element={<Help />} />
             <Route path="/characters" element={<Characters includeAdultContent={includeAdultContent} />} />
             <Route path="/character/:characterId" element={<CharacterPage includeAdultContent={includeAdultContent} />} />
