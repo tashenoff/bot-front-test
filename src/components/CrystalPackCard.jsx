@@ -51,11 +51,6 @@ const CrystalPackCard = ({ crystal, onSelect }) => {
                   <span className="text-black font-bold text-sm">{crystal.price}</span>
                   <span className="text-black text-sm">⭐</span>
                 </div>
-
-
-                <div className="bg-blue-600 px-3 py-1 rounded text-white font-semibold text-sm">
-                  ${(crystal.price * 0.1).toFixed(2)}
-                </div>
               </div>
             </div>
 
