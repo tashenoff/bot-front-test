@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useCallback, memo } from 'react';
 import LazyImage from './LazyImage';
+import { useTranslation } from '../hooks/useTranslation';
 
 // Мемоизированный компонент для элемента одежды
 const ClothingItem = memo(({ item, isSelected, onSelect, onPurchase, apiUrl, userId }) => {
+  const { t, language } = useTranslation();
   const [purchasing, setPurchasing] = useState(false);
 
   const handleSelect = useCallback(() => {
@@ -45,7 +47,7 @@ const ClothingItem = memo(({ item, isSelected, onSelect, onPurchase, apiUrl, use
           loadingClassName="w-full h-32 bg-gray-700 rounded-lg animate-pulse"
           placeholder={
             <div className="flex items-center justify-center h-full">
-              <span className="text-gray-400 text-xs">Загрузка...</span>
+              <span className="text-gray-400 text-xs">{t('loading')}</span>
             </div>
           }
         />
@@ -53,14 +55,14 @@ const ClothingItem = memo(({ item, isSelected, onSelect, onPurchase, apiUrl, use
         {/* Бейдж премиум */}
         {item.is_premium && (
           <div className="absolute top-2 right-2 bg-yellow-500 text-black text-xs px-2 py-1 rounded-full font-bold">
-            ⭐ ПРЕМИУМ
+            ⭐ {t('premium')}
           </div>
         )}
         
         {/* Бейдж выбрано */}
         {isSelected && (
           <div className="absolute top-2 left-2 bg-purple-500 text-white text-xs px-2 py-1 rounded-full font-bold">
-            ✓ ВЫБРАНО
+            ✓ {t('selected')}
           </div>
         )}
       </div>
@@ -84,7 +86,7 @@ const ClothingItem = memo(({ item, isSelected, onSelect, onPurchase, apiUrl, use
               }
             `}
           >
-            {isSelected ? 'Выбрано' : 'Выбрать'}
+            {isSelected ? t('selectedClothing') : t('selectClothing')}
           </button>
         ) : (
           <button
@@ -92,7 +94,7 @@ const ClothingItem = memo(({ item, isSelected, onSelect, onPurchase, apiUrl, use
             disabled={purchasing}
             className="w-full py-2 px-3 rounded-lg text-sm font-medium bg-yellow-600 hover:bg-yellow-700 disabled:bg-gray-600 text-white transition-colors"
           >
-            {purchasing ? 'Покупка...' : `Купить за 💎${item.price_crystals || 50}`}
+            {purchasing ? t('purchasing') : t('buyClothing').replace('{price}', item.price_crystals || 50)}
           </button>
         )}
       </div>
@@ -101,6 +103,7 @@ const ClothingItem = memo(({ item, isSelected, onSelect, onPurchase, apiUrl, use
 });
 
 const ClothingSelector = ({ characterId, userId, botUsername }) => {
+  const { t, language } = useTranslation();
   const [clothingData, setClothingData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -239,7 +242,7 @@ const ClothingSelector = ({ characterId, userId, botUsername }) => {
   if (loading) {
     return (
       <div className="mb-8">
-        <h2 className="text-2xl font-bold mb-4 text-purple-400">Гардероб</h2>
+        <h2 className="text-2xl font-bold mb-4 text-purple-400">{t('wardrobe')}</h2>
         <div className="bg-gray-900 p-6 rounded-lg animate-pulse">
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             {[1, 2, 3].map(i => (
@@ -254,14 +257,14 @@ const ClothingSelector = ({ characterId, userId, botUsername }) => {
   if (error) {
     return (
       <div className="mb-8">
-        <h2 className="text-2xl font-bold mb-4 text-purple-400">Гардероб</h2>
+        <h2 className="text-2xl font-bold mb-4 text-purple-400">{t('wardrobe')}</h2>
         <div className="bg-red-900/20 border border-red-600 p-4 rounded-lg">
-          <p className="text-red-400">Ошибка загрузки гардероба: {error}</p>
+          <p className="text-red-400">{t('wardrobeLoadError').replace('{error}', error)}</p>
           <button 
             onClick={fetchClothingData}
             className="mt-2 bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg text-sm"
           >
-            Попробовать снова
+            {t('tryAgain')}
           </button>
         </div>
       </div>
@@ -271,9 +274,9 @@ const ClothingSelector = ({ characterId, userId, botUsername }) => {
   if (!clothingData || !clothingData.items.length) {
     return (
       <div className="mb-8">
-        <h2 className="text-2xl font-bold mb-4 text-purple-400">Гардероб</h2>
+        <h2 className="text-2xl font-bold mb-4 text-purple-400">{t('wardrobe')}</h2>
         <div className="bg-gray-900 p-6 rounded-lg text-center">
-          <p className="text-gray-400">Для этого персонажа пока нет доступной одежды</p>
+          <p className="text-gray-400">{t('noClothingAvailable')}</p>
         </div>
       </div>
     );
@@ -283,7 +286,7 @@ const ClothingSelector = ({ characterId, userId, botUsername }) => {
     <div className="mb-8">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-2xl font-bold text-purple-400">
-          Гардероб ({clothingData.items.length})
+          {t('wardrobeCount').replace('{count}', clothingData.items.length)}
         </h2>
         
         {clothingData.current_selection && (
@@ -292,7 +295,7 @@ const ClothingSelector = ({ characterId, userId, botUsername }) => {
             disabled={updating}
             className="bg-gray-600 hover:bg-gray-700 disabled:bg-gray-800 px-4 py-2 rounded-lg text-sm transition-colors"
           >
-            {updating ? 'Сброс...' : 'Сбросить выбор'}
+            {updating ? t('clearing') : t('clearSelection')}
           </button>
         )}
       </div>
@@ -301,8 +304,7 @@ const ClothingSelector = ({ characterId, userId, botUsername }) => {
       {!clothingData.user_has_premium && (
         <div className="bg-yellow-900/20 border border-yellow-600 p-3 rounded-lg mb-4">
           <p className="text-yellow-400 text-sm">
-            💡 У вас есть доступ только к бесплатной одежде. 
-            Для доступа ко всем нарядам оформите премиум подписку!
+            {t('freeClothingAccess')}
           </p>
         </div>
       )}
@@ -326,7 +328,7 @@ const ClothingSelector = ({ characterId, userId, botUsername }) => {
       {clothingData.current_selection && (
         <div className="mt-4 bg-purple-900/20 border border-purple-600 p-3 rounded-lg">
           <p className="text-purple-400 text-sm">
-            ✓ Выбрана одежда. Персонаж будет носить ее во всех сценах.
+            {t('clothingSelected')}
           </p>
         </div>
       )}

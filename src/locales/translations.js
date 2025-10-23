@@ -195,7 +195,24 @@ export const translations = {
       yes: 'Да, мне есть 18',
       no: 'Нет, мне меньше 18',
       footer: 'Ваш выбор сохранится в настройках браузера'
-    }
+    },
+    
+    // Wardrobe
+    wardrobe: 'Гардероб',
+    wardrobeCount: 'Гардероб ({count})',
+    freeClothingAccess: '💡 У вас есть доступ только к бесплатной одежде. Для доступа ко всем нарядам оформите премиум подписку или покупайте отдельные предметы за кристаллы 💎!',
+    noClothingAvailable: 'Для этого персонажа пока нет доступной одежды',
+    clothingSelected: '✓ Выбрана одежда. Персонаж будет носить ее во всех сценах.',
+    selected: 'ВЫБРАНО',
+    premium: 'ПРЕМИУМ',
+    selectClothing: 'Выбрать',
+    selectedClothing: 'Выбрано',
+    buyClothing: 'Купить за 💎{price}',
+    purchasing: 'Покупка...',
+    clearSelection: 'Сбросить выбор',
+    clearing: 'Сброс...',
+    wardrobeLoadError: 'Ошибка загрузки гардероба: {error}',
+    tryAgain: 'Попробовать снова'
   },
   
   en: {
@@ -394,6 +411,23 @@ export const translations = {
       yes: 'Yes, I am 18+',
       no: 'No, I am under 18',
       footer: 'Your choice will be saved in browser settings'
-    }
+    },
+    
+    // Wardrobe
+    wardrobe: 'Wardrobe',
+    wardrobeCount: 'Wardrobe ({count})',
+    freeClothingAccess: '💡 You only have access to free clothing. To access all outfits, get a premium subscription or buy individual items with crystals 💎!',
+    noClothingAvailable: 'No clothing available for this character yet',
+    clothingSelected: '✓ Clothing selected. Character will wear it in all scenes.',
+    selected: 'SELECTED',
+    premium: 'PREMIUM',
+    selectClothing: 'Select',
+    selectedClothing: 'Selected',
+    buyClothing: 'Buy for 💎{price}',
+    purchasing: 'Purchasing...',
+    clearSelection: 'Clear Selection',
+    clearing: 'Clearing...',
+    wardrobeLoadError: 'Wardrobe loading error: {error}',
+    tryAgain: 'Try Again'
   }
 };
