@@ -46,7 +46,7 @@ const SceneModal = ({ character, isOpen, onClose, includeAdultContent = false })
 
       try {
         const apiUrl = import.meta.env.VITE_API_URL;
-        const scenesUrl = `${apiUrl}/characters/${character.id}/scenes?include_adult_content=${includeAdultContent}`;
+        const scenesUrl = `${apiUrl}/characters/${character.id}/scenes?include_adult_content=${includeAdultContent}&lang=${language}`;
         console.log('🌐 Запрос сцен:', scenesUrl);
         
         const response = await fetch(scenesUrl);
@@ -67,7 +67,7 @@ const SceneModal = ({ character, isOpen, onClose, includeAdultContent = false })
     };
 
     fetchCharacterScenes();
-  }, [character, includeAdultContent]);
+  }, [character, includeAdultContent, language]); // Добавляем language в зависимости
 
   const handleSceneSelect = (scene) => {
     if (!character) return;

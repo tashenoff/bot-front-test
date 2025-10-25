@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo, useCallback, memo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { handleSceneSelection } from './utils/telegramUtils';
+import { useTranslation } from './hooks/useTranslation';
 import LazyImage from './components/LazyImage';
 import ClothingSelector from './components/ClothingSelector';
 
@@ -21,13 +22,13 @@ const SceneItem = memo(({ scene, onSelect, getSceneName, getSceneIntroText }) =>
   </div>
 ));
 
-// Мемоизированный компонент для интересов
-const InterestsGrid = memo(({ interests }) => {
+  // Мемоизированный компонент для интересов
+const InterestsGrid = memo(({ interests, t }) => {
   if (!interests.length) return null;
   
   return (
     <div className="mb-8">
-      <h2 className="text-2xl font-bold mb-4 text-purple-400">Интересы</h2>
+      <h2 className="text-2xl font-bold mb-4 text-purple-400">{t('interests')}</h2>
       <div className="grid grid-cols-2 gap-3">
         {interests.map((interest, index) => (
           <div key={index} className="bg-gray-800 p-3 rounded-lg text-center">
@@ -73,6 +74,7 @@ const SkeletonLoader = memo(() => (
 const CharacterPage = ({ includeAdultContent = false }) => {
   const { characterId } = useParams();
   const navigate = useNavigate();
+  const { t, language } = useTranslation();
   const [character, setCharacter] = useState(null);
   const [availableScenes, setAvailableScenes] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -97,13 +99,13 @@ const CharacterPage = ({ includeAdultContent = false }) => {
     return `${apiUrl}${imagePath}`;
   }, [apiUrl]);
 
-  // Мемоизированные функции для сцен
+  // Мемоизированные функции для сцен (теперь API возвращает переведенные данные)
   const getSceneName = useCallback((scene) => {
-    return scene.name?.ru || scene.name || 'Безымянная сцена';
-  }, []);
+    return scene.name || t('unnamedScene');
+  }, [t]);
 
   const getSceneIntroText = useCallback((scene) => {
-    return scene.intro_text?.ru || scene.intro_text || '';
+    return scene.intro_text || '';
   }, []);
 
   // Мемоизированное извлечение интересов
@@ -151,7 +153,7 @@ const CharacterPage = ({ includeAdultContent = false }) => {
 
   // Оптимизированная загрузка данных с кэшированием
   const fetchCharacterData = useCallback(async () => {
-    const cacheKey = `character_${characterId}_adult_${includeAdultContent}`;
+    const cacheKey = `character_${characterId}_adult_${includeAdultContent}_lang_${language}`;
     const cached = getCachedData(cacheKey);
     
     if (cached) {
@@ -165,15 +167,16 @@ const CharacterPage = ({ includeAdultContent = false }) => {
       console.log('🔍 CharacterPage Debug Info:', {
         characterId,
         includeAdultContent,
+        language,
         apiUrl
       });
 
-      // Параллельная загрузка персонажа и сцен
-      const scenesUrl = `${apiUrl}/characters/${characterId}/scenes?include_adult_content=${includeAdultContent}`;
+      // Параллельная загрузка персонажа и сцен с параметром языка
+      const scenesUrl = `${apiUrl}/characters/${characterId}/scenes?include_adult_content=${includeAdultContent}&lang=${language}`;
       console.log('🌐 Запрос сцен:', scenesUrl);
       
       const [characterResponse, scenesResponse] = await Promise.all([
-        fetch(`${apiUrl}/characters/${characterId}`),
+        fetch(`${apiUrl}/characters/${characterId}?lang=${language}`),
         fetch(scenesUrl)
       ]);
       
@@ -201,7 +204,7 @@ const CharacterPage = ({ includeAdultContent = false }) => {
     } finally {
       setLoading(false);
     }
-  }, [characterId, includeAdultContent, apiUrl, getCachedData, setCachedData]);
+  }, [characterId, includeAdultContent, language, apiUrl, getCachedData, setCachedData]);
 
   useEffect(() => {
     fetchCharacterData();
@@ -230,13 +233,13 @@ const CharacterPage = ({ includeAdultContent = false }) => {
     return (
       <div className="min-h-screen bg-black text-white flex items-center justify-center">
         <div className="text-center">
-          <h2 className="text-2xl font-bold mb-4">Персонаж не найден</h2>
+          <h2 className="text-2xl font-bold mb-4">{t('characterNotFound')}</h2>
           {error && <p className="text-red-400 mb-4">{error}</p>}
           <button 
             onClick={handleBack}
             className="bg-purple-600 hover:bg-purple-700 px-6 py-3 rounded-lg transition-colors"
           >
-            Назад к персонажам
+            {t('backToCharacters')}
           </button>
         </div>
       </div>
@@ -256,28 +259,28 @@ const CharacterPage = ({ includeAdultContent = false }) => {
               loadingClassName="w-full h-96 bg-gray-700 rounded-lg animate-pulse"
               placeholder={
                 <div className="flex items-center justify-center h-full">
-                  <span className="text-gray-400">Загрузка изображения...</span>
+                  <span className="text-gray-400">{t('loading')}...</span>
                 </div>
               }
             />
           </div>
           <h1 className="text-3xl font-bold mt-4 text-purple-400 text-left">
-            {character.name?.ru || character.name}
+            {character.name}
           </h1>
         </div>
 
         {/* О персонаже */}
         <div className="mb-8">
-          <h2 className="text-2xl font-bold mb-4 text-purple-400">О персонаже</h2>
+          <h2 className="text-2xl font-bold mb-4 text-purple-400">{t('aboutCharacter')}</h2>
           <div className="bg-gray-900 p-6 rounded-lg">
             <p className="text-gray-300 leading-relaxed">
-              {character.description?.ru || character.description}
+              {character.description}
             </p>
           </div>
         </div>
 
         {/* Интересы */}
-        <InterestsGrid interests={characterInterests} />
+        <InterestsGrid interests={characterInterests} t={t} />
 
         {/* Гардероб персонажа */}
         <ClothingSelector 
@@ -289,7 +292,7 @@ const CharacterPage = ({ includeAdultContent = false }) => {
         {/* Доступные сцены */}
         <div className="mb-8">
           <h2 className="text-2xl font-bold mb-4 text-purple-400">
-            Доступные сцены ({availableScenes.length})
+            {t('availableScenes')} ({availableScenes.length})
           </h2>
           {availableScenes.length > 0 ? (
             <div className="grid grid-cols-1 gap-4">
@@ -305,7 +308,7 @@ const CharacterPage = ({ includeAdultContent = false }) => {
             </div>
           ) : (
             <div className="bg-gray-900 p-6 rounded-lg text-center">
-              <p className="text-gray-400">Нет доступных сцен</p>
+              <p className="text-gray-400">{t('noScenesAvailable')}</p>
             </div>
           )}
         </div>
@@ -316,7 +319,7 @@ const CharacterPage = ({ includeAdultContent = false }) => {
             onClick={handleBack}
             className="bg-purple-600 hover:bg-purple-700 px-6 py-3 rounded-lg transition-colors"
           >
-            Назад к персонажам
+            {t('backToCharacters')}
           </button>
         </div>
       </div>

@@ -4,10 +4,12 @@ import AboutCharacter from './AboutCharacter';
 import CharacterGallery from './CharacterGallery';
 import Footer from './Footer';
 import { handleSceneSelection } from './utils/telegramUtils';
+import { useTranslation } from './hooks/useTranslation';
 
 const SceneSelection = ({ includeAdultContent = false }) => {
   const { characterId } = useParams();
   const navigate = useNavigate();
+  const { t, language } = useTranslation();
   const [character, setCharacter] = useState(null);
   const [availableScenes, setAvailableScenes] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -26,13 +28,13 @@ const SceneSelection = ({ includeAdultContent = false }) => {
         const apiUrl = import.meta.env.VITE_API_URL;
         
         // Загружаем данные персонажа
-        const characterResponse = await fetch(`${apiUrl}/characters/${characterId}`);
+        const characterResponse = await fetch(`${apiUrl}/characters/${characterId}?lang=${language}`);
         if (characterResponse.ok) {
           const characterData = await characterResponse.json();
           setCharacter(characterData);
 
           // Загружаем сцены персонажа с учетом возрастных ограничений
-          const scenesUrl = `${apiUrl}/characters/${characterId}/scenes?include_adult_content=${includeAdultContent}`;
+          const scenesUrl = `${apiUrl}/characters/${characterId}/scenes?include_adult_content=${includeAdultContent}&lang=${language}`;
           console.log('🌐 Запрос сцен:', scenesUrl);
           
           const scenesResponse = await fetch(scenesUrl);
@@ -59,7 +61,7 @@ const SceneSelection = ({ includeAdultContent = false }) => {
     };
 
     fetchCharacterData();
-  }, [characterId, includeAdultContent]);
+  }, [characterId, includeAdultContent, language]); // Перезагружаем при смене языка
 
   useEffect(() => {
     const handleScroll = () => {
@@ -82,7 +84,7 @@ const SceneSelection = ({ includeAdultContent = false }) => {
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-900 text-white flex items-center justify-center">
-        <div className="text-xl">Загрузка...</div>
+        <div className="text-xl">{t('loading')}</div>
       </div>
     );
   }
@@ -90,7 +92,7 @@ const SceneSelection = ({ includeAdultContent = false }) => {
   if (!character) {
     return (
       <div className="min-h-screen bg-gray-900 text-white flex items-center justify-center">
-        <div className="text-xl">Персонаж не найден</div>
+        <div className="text-xl">{t('characterNotFound')}</div>
       </div>
     );
   }
@@ -103,7 +105,7 @@ const SceneSelection = ({ includeAdultContent = false }) => {
           onClick={handleBack}
           className="mb-4 text-purple-400 hover:text-purple-300 flex items-center gap-2"
         >
-          ← Назад к персонажам
+          {t('backToCharacters')}
         </button>
 
       </div>
@@ -117,7 +119,7 @@ const SceneSelection = ({ includeAdultContent = false }) => {
 
       {/* Выбор сцен */}
       <div className="container mx-auto px-4 py-8">
-        <h2 className="text-xl font-bold mb-6 text-center text-purple-400">Выберите сцену для общения</h2>
+        <h2 className="text-xl font-bold mb-6 text-center text-purple-400">{t('chooseSceneForChat')}</h2>
 
         {availableScenes.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -150,7 +152,7 @@ const SceneSelection = ({ includeAdultContent = false }) => {
           </div>
         ) : (
           <div className="text-center py-8">
-            <p className="text-gray-400 text-lg">Для этого персонажа пока нет доступных сцен</p>
+            <p className="text-gray-400 text-lg">{t('noScenesAvailable')}</p>
           </div>
         )}
 
@@ -164,7 +166,7 @@ const SceneSelection = ({ includeAdultContent = false }) => {
               }}
               className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold py-3 px-8 rounded-full transition duration-300 transform hover:scale-105"
             >
-              Случайная сцена
+              {t('randomScene')}
             </button>
           </div>
         )}
@@ -179,7 +181,7 @@ const SceneSelection = ({ includeAdultContent = false }) => {
         <button
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
           className="fixed bottom-24 left-1/2 -translate-x-1/2 bg-purple-600 hover:bg-purple-700 text-white p-3 rounded-full shadow-lg transition-opacity duration-300 z-40 md:bottom-8 md:right-8 md:left-auto md:translate-x-0"
-          aria-label="Прокрутить вверх"
+          aria-label={t('scrollUp')}
         >
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />

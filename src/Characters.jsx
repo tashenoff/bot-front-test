@@ -15,20 +15,14 @@ const Characters = ({ includeAdultContent = false }) => {
   const observer = useRef(null);
   const sentinelRef = useRef(null);
 
-  // Мемоизированные функции для получения локализованного контента
+  // Функции для получения контента (API уже возвращает переведенные данные)
   const getCharacterName = useCallback((character) => {
-    if (typeof character.name === 'object') {
-      return character.name[language] || character.name.ru;
-    }
     return character.name;
-  }, [language]);
+  }, []);
 
   const getCharacterDescription = useCallback((character) => {
-    if (typeof character.description === 'object') {
-      return character.description[language] || character.description.ru;
-    }
     return character.description;
-  }, [language]);
+  }, []);
 
   // Debounced поиск для улучшения производительности
   const debouncedSearch = useCallback(
@@ -46,7 +40,7 @@ const Characters = ({ includeAdultContent = false }) => {
   const fetchCharacters = async () => {
     try {
       const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8001';
-      const response = await fetch(`${apiUrl}/characters`);
+      const response = await fetch(`${apiUrl}/characters?lang=${language}`);
       const data = await response.json();
       setCharacters(data);
     } catch (error) {
@@ -59,7 +53,7 @@ const Characters = ({ includeAdultContent = false }) => {
 
   useEffect(() => {
     fetchCharacters();
-  }, []);
+  }, [language]); // Перезагружаем персонажей при смене языка
 
   // Мемоизированная фильтрация персонажей
   const filteredCharacters = useMemo(() => {
